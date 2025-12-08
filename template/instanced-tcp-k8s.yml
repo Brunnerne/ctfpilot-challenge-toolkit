@@ -39,7 +39,7 @@ spec:
           - 1.1.1.1
           - 8.8.8.8
       tolerations:
-        - key: "ctfpilot.com/node"
+        - key: "cluster.ctfpilot.com/node"
           value: "scaler"
           effect: "PreferNoSchedule"
       affinity:
@@ -47,7 +47,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: "ctfpilot.com/node"
+                  - key: "cluster.ctfpilot.com/node"
                     operator: In
                     values:
                       - scaler
