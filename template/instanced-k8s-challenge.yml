@@ -1,4 +1,4 @@
-apiVersion: ctfpilot.com/v1
+apiVersion: kube-ctf.ctfpilot.com/v1
 kind: instancedChallenge
 metadata:
   name: "{{ CHALLENGE_NAME }}"
