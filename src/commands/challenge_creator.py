@@ -154,6 +154,8 @@ class Args:
                     break
                 except ValueError:
                     print("Invalid instanced type. Please try again.")
+        elif args.instanced_type != "none":
+            challenge.set_instanced_type(args.instanced_type)
         else:
             challenge.set_instanced_type("none")
                 
