@@ -116,6 +116,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}
+                name: "ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}"
                 port:
                   number: 80
