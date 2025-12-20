@@ -95,7 +95,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "ingress-ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}"
-  namespace: kubectf-challenges-shared
+  namespace: kubectf-challenges
   labels:
     challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
     challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
