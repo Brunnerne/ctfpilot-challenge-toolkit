@@ -147,13 +147,15 @@ class Args:
         else:
             challenge.set_min_points(args.min_points)
         
-        if (args.type == "instanced" or prompted_type == "instanced") and args.instanced_type == "none":
+        if (args.type in [ "instanced", "shared" ] or prompted_type in [ "instanced", "shared" ]) and args.instanced_type == "none":
             while True:
                 try:
-                    challenge.set_instanced_type(input(f"Type of instanced challenge ({', '.join(INSTANCED_TYPES)}): ").lower())
+                    challenge.set_instanced_type(input(f"Instanced type for challenge ({', '.join(INSTANCED_TYPES)}): ").lower())
                     break
                 except ValueError:
                     print("Invalid instanced type. Please try again.")
+        elif args.instanced_type != "none":
+            challenge.set_instanced_type(args.instanced_type)
         else:
             challenge.set_instanced_type("none")
                 
