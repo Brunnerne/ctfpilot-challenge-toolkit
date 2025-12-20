@@ -52,7 +52,7 @@ spec:
                     values:
                       - scaler
       containers:
-        - name: web
+        - name: tcp
           image: ghcr.io/{{ CHALLENGE_REPO }}-{{ DOCKER_IMAGE }}:{{ CHALLENGE_VERSION }}
           imagePullPolicy: IfNotPresent
           resources:
