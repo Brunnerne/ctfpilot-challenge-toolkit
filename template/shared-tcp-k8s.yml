@@ -94,7 +94,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.priority: "100"
 spec:
   entryPoints:
-    - tcp-test # Needs to be a custom entrypoint defined in Traefik - This is defined per challenge
+    - tcp-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }} # Needs to be a custom entrypoint defined in Traefik - This is defined per challenge
   routes:
     - match: HostSNI(`*`)
       priority: 10
