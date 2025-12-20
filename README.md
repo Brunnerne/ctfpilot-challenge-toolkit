@@ -575,10 +575,10 @@ The following templates are required:
   - `challenge-configmap.yml`
   - `page-configmap.yml`
 - Challenge deployment templates:
-  - Web: `instanced-web-k8s.yml`
-  - TCP: `instanced-tcp-k8s.yml`
-  - Web: `shared-web-k8s.yml`
-  - TCP: `shared-tcp-k8s.yml`
+  - Instanced web: `instanced-web-k8s.yml`
+  - Instanced TCP: `instanced-tcp-k8s.yml`
+  - Shared Web: `shared-web-k8s.yml`
+  - Shared TCP: `shared-tcp-k8s.yml`
 - [kube-ctf](https://github.com/ctfpilot/kube-ctf) deployment template:
   - `instanced-k8s-challenge.yml`
 
