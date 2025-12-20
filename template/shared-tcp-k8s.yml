@@ -1,33 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "ctf-{{ deployment_id }}"
-  namespace: kubectf-challenges-instanced
+  name: "ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}"
+  namespace: kubectf-challenges
   labels:
     challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
     challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
     challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
-    instanced.challenges.ctfpilot.com/deployment: "{{ deployment_id }}"
-    instanced.challenges.ctfpilot.com/owner: "{{ owner_id }}"
-    ctfpilot.com/component: "instanced-challenge"
-  annotations:
-    janitor/expires: "{{ expires }}"
+    ctfpilot.com/component: "shared-challenge"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      instanced.challenges.ctfpilot.com/deployment: "{{ deployment_id }}"
-      instanced.challenges.ctfpilot.com/owner: "{{ owner_id }}"
+      challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
+      challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
+      challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
   template:
     metadata:
       labels:
-        role: "{{ CHALLENGE_TYPE }}"
         challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
         challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
         challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
-        instanced.challenges.ctfpilot.com/deployment: "{{ deployment_id }}"
-        instanced.challenges.ctfpilot.com/owner: "{{ owner_id }}"
-        ctfpilot.com/component: "instanced-challenge"
+        ctfpilot.com/component: "shared-challenge"
     spec:
       enableServiceLinks: false
       automountServiceAccountToken: false
@@ -69,21 +63,18 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: "ctf-{{ deployment_id }}"
-  namespace: kubectf-challenges-instanced
+  name: "ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}"
+  namespace: kubectf-challenges
   labels:
     challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
     challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
     challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
-    instanced.challenges.ctfpilot.com/deployment: "{{ deployment_id }}"
-    instanced.challenges.ctfpilot.com/owner: "{{ owner_id }}"
-    ctfpilot.com/component: "instanced-challenge"
-  annotations:
-    janitor/expires: "{{ expires }}"
+    ctfpilot.com/component: "shared-challenge"
 spec:
   selector:
-    role: "{{ CHALLENGE_TYPE }}"
-    instanced.challenges.ctfpilot.com/deployment: "{{ deployment_id }}"
+    challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
+    challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
+    challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
   ports:
     - port: 8080
       name: tcp
@@ -92,25 +83,24 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
 metadata:
-  name: "ingress-ctf-{{ deployment_id }}"
-  namespace: kubectf-challenges-instanced
+  name: "ingress-ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}"
+  namespace: kubectf-challenges
   labels:
     challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
     challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
     challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
-    instanced.challenges.ctfpilot.com/deployment: "{{ deployment_id }}"
-    instanced.challenges.ctfpilot.com/owner: "{{ owner_id }}"
-    ctfpilot.com/component: "instanced-challenge"
+    ctfpilot.com/component: "shared-challenge"
   annotations:
-    janitor/expires: "{{ expires }}"
     traefik.ingress.kubernetes.io/router.priority: "100"
 spec:
   entryPoints:
-    - websecure
+    - tcp-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }} # Needs to be a custom entrypoint defined in Traefik - This is defined per challenge
   routes:
-    - match: HostSNI(`{{ deployment_id }}.{{ domain }}`)
+    - match: HostSNI(`*`)
+      priority: 10
+      middlewares:
+        - name: challenge-ipwhitelist-tcp
+          namespace: kubectf-challenges
       services:
-        - name: "ctf-{{ deployment_id }}"
+        - name: "ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}"
           port: 8080
-  tls:
-    secretName: kubectf-cert-challs
