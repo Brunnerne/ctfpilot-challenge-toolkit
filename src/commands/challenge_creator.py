@@ -147,7 +147,7 @@ class Args:
         else:
             challenge.set_min_points(args.min_points)
         
-        if (args.type == "instanced" or prompted_type == "instanced") and args.instanced_type == "none":
+        if ((args.type == "instanced" or prompted_type == "instanced") or (args.type == "shared" or prompted_type == "shared")) and args.instanced_type == "none":
             while True:
                 try:
                     challenge.set_instanced_type(input(f"Type of instanced challenge ({', '.join(INSTANCED_TYPES)}): ").lower())

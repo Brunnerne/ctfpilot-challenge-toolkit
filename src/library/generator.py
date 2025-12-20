@@ -60,7 +60,12 @@ class Generator:
             
             self.dockerfile()
             
-            self.instanced_template_file()
+            if self.challenge.type == "shared":
+                self.shared_template_file()
+            elif self.challenge.type == "instanced":
+                self.instanced_template_file()
+            else:
+                print(f"Challenge type {self.challenge.type} not supported for template generation.")
 
     # --- Helper functions ---
     
@@ -266,14 +271,14 @@ This file should contain the steps to solve the challenge.""")
         return self.check_if_dir_exists(os.path.join(self.dir_template, "k8s.yml"))
     
     def instanced_template_file(self):
-        # Check if needed template exists
-        if not self.instanced_template_source_file_exists():
-            print("k8s template files not found!")
-            return False
-        
         # Check if template directory to write to exists
         if not self.check_if_dir_exists(self.dir_template):
             print("Template directory not found!")
+            return False
+        
+        # Check if needed template exists
+        if not self.instanced_template_source_file_exists():
+            print("Instanced k8s template files not found!")
             return False
         
         # Check if template file already exists
@@ -287,6 +292,46 @@ This file should contain the steps to solve the challenge.""")
             source_file = os.path.join(Utils.get_template_dir(), "instanced-tcp-k8s.yml")
         else:
             print(f"Instanced type {self.challenge.instanced_type} is not supported for instanced challenges.")
+            return False
+
+        output_file = os.path.join(self.dir_template, "k8s.yml")
+        with open(source_file, "r") as f:
+            with open(output_file, "w") as of:
+                of.write(f.read())
+        
+        print(f"File created: {output_file}")
+        
+        return True
+    
+    def shared_template_source_file_exists(self):
+        return self.check_if_dir_exists(os.path.join(Utils.get_template_dir(), "shared-web-k8s.yml")) and \
+               self.check_if_dir_exists(os.path.join(Utils.get_template_dir(), "shared-tcp-k8s.yml"))
+    
+    def shared_template_file_exists(self):
+        return self.check_if_dir_exists(os.path.join(self.dir_template, "k8s.yml"))
+    
+    def shared_template_file(self):
+        # Check if template directory to write to exists
+        if not self.check_if_dir_exists(self.dir_template):
+            print("Template directory not found!")
+            return False
+        
+        # Check if needed template exists
+        if not self.shared_template_source_file_exists():
+            print("Shared k8s template files not found!")
+            return False
+        
+        # Check if template file already exists
+        if self.shared_template_file_exists():
+            print("Template file already exists!")
+            return False
+        
+        if self.challenge.instanced_type == "web":
+            source_file = os.path.join(Utils.get_template_dir(), "shared-web-k8s.yml")
+        elif self.challenge.instanced_type == "tcp":
+            source_file = os.path.join(Utils.get_template_dir(), "shared-tcp-k8s.yml")
+        else:
+            print(f"Instanced type {self.challenge.instanced_type} is not supported for shared challenges.")
             return False
 
         output_file = os.path.join(self.dir_template, "k8s.yml")

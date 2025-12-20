@@ -577,15 +577,14 @@ The following templates are required:
 - Challenge deployment templates:
   - Web: `instanced-web-k8s.yml`
   - TCP: `instanced-tcp-k8s.yml`
+  - Web: `shared-web-k8s.yml`
+  - TCP: `shared-tcp-k8s.yml`
 - [kube-ctf](https://github.com/ctfpilot/kube-ctf) deployment template:
   - `instanced-k8s-challenge.yml`
 
 **Configmap templates** are used to generate ConfigMaps for challenges and pages.  
 **Challenge deployment templates** are used to generate the Kubernetes deployment files for challenges.
 The **`kube-ctf` deployment template** is used to generate the deployment file for instanced challenges, when using the [kube-ctf](https://github.com/ctfpilot/kube-ctf) platform. Within this template, the challenge deployment template is embedded.
-
-> [!NOTE]
-> Only instanced templates are currently generated. Shared templates are not yet supported.
 
 ### Page structure
 

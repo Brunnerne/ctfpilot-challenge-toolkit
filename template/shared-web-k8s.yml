@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}"
+  namespace: kubectf-challenges
+  labels:
+    challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
+    challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
+    challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
+    ctfpilot.com/component: "shared-challenge"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
+      challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
+      challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
+  template:
+    metadata:
+      labels:
+        challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
+        challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
+        challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
+        ctfpilot.com/component: "shared-challenge"
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 1.1.1.1
+          - 8.8.8.8
+      tolerations:
+        - key: "cluster.ctfpilot.com/node"
+          value: "scaler"
+          effect: "PreferNoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "cluster.ctfpilot.com/node"
+                    operator: In
+                    values:
+                      - scaler
+      containers:
+        - name: web
+          image: ghcr.io/{{ CHALLENGE_REPO }}-{{ DOCKER_IMAGE }}:{{ CHALLENGE_VERSION }}
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+          ports:
+            - containerPort: 80
+              name: web-port
+          startupProbe:
+            httpGet:
+              path: /
+              port: web-port
+            failureThreshold: 12
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: web-port
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}"
+  namespace: kubectf-challenges
+  labels:
+    challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
+    challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
+    challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
+    ctfpilot.com/component: "shared-challenge"
+spec:
+  selector:
+    challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
+    challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
+    challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
+  ports:
+    - port: 80
+      targetPort: web-port
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "ingress-ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}"
+  namespace: kubectf-challenges-shared
+  labels:
+    challenges.ctfpilot.com/type: "{{ CHALLENGE_TYPE }}"
+    challenges.ctfpilot.com/name: "{{ CHALLENGE_NAME }}"
+    challenges.ctfpilot.com/category: "{{ CHALLENGE_CATEGORY }}"
+    ctfpilot.com/component: "shared-challenge"
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: kubectf-instancing-fallback@kubernetescrd
+spec:
+  tls:
+    - hosts:
+        - "{{ CHALLENGE_NAME }}.{{ .Values.kubectf.host }}"
+      secretName: kubectf-cert-challs
+  rules:
+    - host: "{{ CHALLENGE_NAME }}.{{ .Values.kubectf.host }}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ctf-{{ CHALLENGE_CATEGORY }}-{{ CHALLENGE_NAME }}
+                port:
+                  number: 80
