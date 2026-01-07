@@ -1,5 +1,5 @@
 apiVersion: kube-ctf.ctfpilot.com/v1
-kind: instancedChallenge
+kind: InstancedChallenge
 metadata:
   name: "{{ CHALLENGE_NAME }}"
   labels:
