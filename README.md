@@ -456,7 +456,6 @@ The structure is as follows:
 ├── pages/
 │   └── page-1/
 ├── template/
-├── challenge-toolkit/
 └── <other files>
 ```
 
