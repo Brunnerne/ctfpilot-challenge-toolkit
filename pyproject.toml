@@ -30,7 +30,7 @@ Issues = "https://github.com/ctfpilot/challenge-toolkit/issues/"
 Repository = "https://github.com/ctfpilot/challenge-toolkit.git"
 
 [project.scripts]
-challenge-toolkit = "challenge_toolkit.ctf:main"
+challenge-toolkit = "challenge_toolkit.cli:main"
 
 [build-system]
 requires = ["hatchling >= 1.26"]
