@@ -18,6 +18,10 @@ The Challenge Toolkit streamlines the entire CTF challenge lifecycle, from boots
 
 The project uses standard Python packaging, therefore it can be installed by virtually any Python package manager.
 
+> [!IMPORTANT]
+> We recommend always locking the version you install. 
+> This can be done by adding `@<version>` at the end of the install command, such as `@v1.2.0` to pin the install to `v1.2.0`.
+
 ```
 uv tool install git+https://github.com/ctfpilot/challenge-toolkit
 # or using pipx
