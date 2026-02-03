@@ -41,12 +41,6 @@ ctf-toolkit <command> [arguments] [options]
 
 In order to use `create`, `template`, and `page` you need to copy the deployment templates into the `template/` directory of your challenge repository (In accordance with the **[Template structure](#template-structure)** section).
 
-This can be done by running:
-
-```sh
-cp -r challenge-toolkit/template/ .
-```
-
 Example templates can be found in the [`template` directory](./template)
 
 ### Environment Variables
