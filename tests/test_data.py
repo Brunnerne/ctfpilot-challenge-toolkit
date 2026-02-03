@@ -847,7 +847,7 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertIn("handout_dir: files", yml_str)
 
 class TestChallengeFileLoad(unittest.TestCase):
-    file_dir = pathlib.Path(__file__).parent / 'data'
+    file_dir = pathlib.Path(__file__).parent.joinpath('data')
     json_file = 'full-example.json'
     json_multi_flag_file = 'full-example-multi-flag.json'
     json_multi_flag_object_file = 'full-example-multi-flag-object.json'
