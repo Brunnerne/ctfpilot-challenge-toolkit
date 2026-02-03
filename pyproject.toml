@@ -24,8 +24,10 @@ dependencies = [
 ]
 
 [project.urls]
-issues = "https://github.com/ctfpilot/challenge-toolkit/issues/"
-source = "https://github.com/ctfpilot/challenge-toolkit/"
+Changelog = "https://github.com/ctfpilot/challenge-toolkit/releases/"
+Homepage = "https://github.com/ctfpilot/challenge-toolkit/"
+Issues = "https://github.com/ctfpilot/challenge-toolkit/issues/"
+Repository = "https://github.com/ctfpilot/challenge-toolkit.git"
 
 [project.scripts]
 ctf-toolkit = "challenge_toolkit.ctf:main"
