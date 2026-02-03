@@ -1,0 +1,18 @@
+[project]
+name = "challenge-toolkit"
+version = "0.1.0"
+description = "CTFp challenge development toolkit"
+readme = "README.md"
+requires-python = ">=3.10"
+license-files = ["LICENSE"]
+dependencies = [
+  "python-slugify==8.0.4",
+  "pyyaml==6.0.2",
+]
+
+[project.scripts]
+ctf-toolkit = "challenge_toolkit.ctf:main"
+
+[build-system]
+requires = ["uv_build>=0.9.28,<0.10.0"]
+build-backend = "uv_build"
