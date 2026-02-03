@@ -593,6 +593,16 @@ We welcome contributions of all kinds, from **code** and **documentation** to **
 
 Please check the [Contribution Guidelines (`CONTRIBUTING.md`)](/CONTRIBUTING.md) for detailed guidelines on how to contribute.
 
+### Running tests
+
+To run the test suite, ensure you have all development dependencies installed. You can then execute the tests using `pytest`:
+
+```sh
+uv run pytest
+```
+
+### Contributor License Agreement (CLA)
+
 To maintain the ability to distribute contributions across all our licensing models, **all code contributions require signing a Contributor License Agreement (CLA)**.
 You can review **[the CLA here](https://github.com/ctfpilot/cla)**. CLA signing happens automatically when you create your first pull request.  
 To administrate the CLA signing process, we are using **[CLA assistant lite](https://github.com/marketplace/actions/cla-assistant-lite)**.
