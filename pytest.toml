@@ -1,0 +1,4 @@
+[pytest]
+# Suggested by pytest
+# https://docs.pytest.org/en/stable/explanation/goodpractices.html#choosing-an-import-mode
+addopts = ["--import-mode=importlib"]
