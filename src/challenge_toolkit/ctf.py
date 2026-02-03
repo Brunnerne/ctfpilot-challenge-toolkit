@@ -2,11 +2,11 @@ import os
 
 import argparse
 
-from commands.challenge_creator import ChallengeCreator
-from commands.template_renderer import TemplateRenderer
-from commands.page import PageCommand
-from commands.pipeline import DockerBuild
-from commands.slugify import SlugifyCommand
+from challenge_toolkit.commands.challenge_creator import ChallengeCreator
+from challenge_toolkit.commands.template_renderer import TemplateRenderer
+from challenge_toolkit.commands.page import PageCommand
+from challenge_toolkit.commands.pipeline import DockerBuild
+from challenge_toolkit.commands.slugify import SlugifyCommand
 
 class Args:
     command = None
