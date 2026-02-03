@@ -35,3 +35,8 @@ challenge-toolkit = "challenge_toolkit.cli:main"
 [build-system]
 requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
