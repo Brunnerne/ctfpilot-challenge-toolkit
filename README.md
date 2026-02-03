@@ -33,7 +33,7 @@ pip install git+https://github.com/ctfpilot/challenge-toolkit
 You can then run the tool from the command line:
 
 ```sh
-ctf-toolkit <command> [arguments] [options]
+challenge-toolkit <command> [arguments] [options]
 ```
 
 > [!IMPORTANT]
@@ -126,7 +126,7 @@ DEFAULT = {
 The toolkit provides several commands to manage CTF challenges throughout their lifecycle. All commands follow the format:
 
 ```sh
-ctf-toolkit <command> [arguments] [options]
+challenge-toolkit <command> [arguments] [options]
 ```
 
 ### Command Overview
@@ -150,7 +150,7 @@ Bootstrap a new challenge with the proper directory structure and template files
 > The new challenge will then be located in `challenges/<category>/<slug>/`.
 
 ```sh
-ctf-toolkit create [options]
+challenge-toolkit create [options]
 ```
 
 **Options:**
@@ -178,10 +178,10 @@ ctf-toolkit create [options]
 
 ```sh
 # Interactive mode (recommended for first-time users)
-ctf-toolkit create
+challenge-toolkit create
 
 # Non-interactive mode with all parameters
-ctf-toolkit create \
+challenge-toolkit create \
   --no-prompts \
   --name "SQL Injection 101" \
   --slug "sql-injection-101" \
@@ -205,7 +205,7 @@ Generate Kubernetes deployment files, ConfigMaps, or handout archives for challe
 > The command should be run from the root of a challenge repository, as it relies on the challenge directory structure defined in the [Challenge repository structure](#challenge-repository-structure) section.
 
 ```sh
-ctf-toolkit template <renderer> <challenge> [options]
+challenge-toolkit template <renderer> <challenge> [options]
 ```
 
 **Arguments:**
@@ -268,18 +268,18 @@ ctf-toolkit template <renderer> <challenge> [options]
 
 ```sh
 # Generate Kubernetes deployment files
-ctf-toolkit template k8s web/sql-injection-101
+challenge-toolkit template k8s web/sql-injection-101
 
 # Generate ConfigMap with custom expiry time (2 hours) and repo
-ctf-toolkit template configmap web/sql-injection-101 \
+challenge-toolkit template configmap web/sql-injection-101 \
   --expires 7200 \
   --repo ctfpilot/ctf-challenges
 
 # Create handout archive
-ctf-toolkit template handout web/sql-injection-101
+challenge-toolkit template handout web/sql-injection-101
 
 # Clean generated files
-ctf-toolkit template clean web/sql-injection-101
+challenge-toolkit template clean web/sql-injection-101
 ```
 
 ### `pipeline` - Build and tag Docker images
@@ -292,7 +292,7 @@ Build Docker images for challenges and tag them appropriately for container regi
 > The command should be run from the root of a challenge repository, as it relies on the challenge directory structure defined in the [Challenge repository structure](#challenge-repository-structure) section.
 
 ```sh
-ctf-toolkit pipeline <challenge> <registry> <image_prefix> [options]
+challenge-toolkit pipeline <challenge> <registry> <image_prefix> [options]
 ```
 
 **Arguments:**
@@ -320,13 +320,13 @@ ctf-toolkit pipeline <challenge> <registry> <image_prefix> [options]
 
 ```sh
 # Build and tag Docker image
-ctf-toolkit pipeline \
+challenge-toolkit pipeline \
   web/sql-injection-101 \
   ghcr.io \
   ctfpilot/ctf-challenges
 
 # Build with custom suffix (e.g., for staging)
-ctf-toolkit pipeline \
+challenge-toolkit pipeline \
   web/sql-injection-101 \
   ghcr.io \
   ctfpilot/ctf-challenges \
@@ -346,7 +346,7 @@ Generate Kubernetes ConfigMaps pages, following the [CTF Pilot's Page Schema](ht
 > The command should be run from the root of a challenge repository, as it relies on the challenge directory structure defined in the [Challenge repository structure](#challenge-repository-structure) section.
 
 ```sh
-ctf-toolkit page <page> [options]
+challenge-toolkit page <page> [options]
 ```
 
 **Arguments:**
@@ -368,10 +368,10 @@ ctf-toolkit page <page> [options]
 
 ```sh
 # Render a custom page
-ctf-toolkit page rules --repo ctfpilot/ctf-challenges
+challenge-toolkit page rules --repo ctfpilot/ctf-challenges
 
 # Render about page
-ctf-toolkit page about
+challenge-toolkit page about
 ```
 
 ### `slugify` - Convert strings to URL-safe slugs
@@ -381,7 +381,7 @@ Utility command to convert challenge names into URL-safe slugs following the too
 **Usage:**
 
 ```sh
-ctf-toolkit slugify <name>
+challenge-toolkit slugify <name>
 ```
 
 **Arguments:**
@@ -394,11 +394,11 @@ ctf-toolkit slugify <name>
 
 ```sh
 # Convert challenge name to slug
-ctf-toolkit slugify "SQL Injection 101"
+challenge-toolkit slugify "SQL Injection 101"
 # Output: sql-injection-101
 
 # Convert with special characters
-ctf-toolkit slugify "Web: XSS & CSRF"
+challenge-toolkit slugify "Web: XSS & CSRF"
 # Output: web-xss-csrf
 ```
 
