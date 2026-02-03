@@ -66,26 +66,6 @@ Currently, the following dependencies are required:
 
 Python dependencies are listed in the `pyproject.toml` file and are automatically installed when installing the package via pip or similar tools.
 
-### Including the tool in your project as a git submodule
-
-One way to include it into your own project is to add it as a git submodule:
-
-```sh
-git submodule add https://github.com/ctfpilot/challenge-toolkit
-```
-
-To then clone your own project with the submodule included, run:
-
-```sh
-git clone --recurse-submodules <your-repo-url>
-```
-
-Or if you already have cloned your repository, run:
-
-```sh
-git submodule update --init --recursive
-```
-
 ### Typical usage
 
 The tool is typically used in three scenarios:
