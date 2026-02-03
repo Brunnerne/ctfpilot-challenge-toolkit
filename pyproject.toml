@@ -7,10 +7,10 @@ requires-python = ">=3.10"
 license = "EUPL-1.2"
 license-files = ["LICENSE"]
 authors = [
-  { name = "Mikkel Albrechtsen", email = "mikkel.alb@gmail.com" },
+  { name = "Mikkel Albrechtsen", email = "developer@themikkel.dk" },
 ]
 maintainers = [
-  { name = "Mikkel Albrechtsen", email = "mikkel.alb@gmail.com" },
+  { name = "Mikkel Albrechtsen", email = "developer@themikkel.dk" },
 ]
 keywords = [
   "ctf",
