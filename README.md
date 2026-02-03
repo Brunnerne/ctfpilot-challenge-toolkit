@@ -16,30 +16,28 @@ The Challenge Toolkit streamlines the entire CTF challenge lifecycle, from boots
 
 ## How to run
 
-> [!NOTE]
-> We are currently working on making it easier to use the tool.  
+The project uses standard Python packaging, therefore it can be installed by virtually any Python package manager.
 
-The current tool is only provided as the raw python files.  
-Therefore, in order to run the tool, first clone this repository:
+> [!IMPORTANT]
+> We recommend always locking the version you install. 
+> This can be done by adding `@<version>` at the end of the install command, such as `@v1.2.0` to pin the install to `v1.2.0`.
 
-```sh
-git clone https://github.com/ctfpilot/challenge-toolkit
 ```
-
-In order to install required dependencies, run:
-
-```sh
-pip install -r challenge-toolkit/src/requirements.txt
+uv tool install git+https://github.com/ctfpilot/challenge-toolkit
+# or using pipx
+pipx install git+https://github.com/ctfpilot/challenge-toolkit
+# or using pip (be sure to use a virtual environment)
+pip install git+https://github.com/ctfpilot/challenge-toolkit
 ```
 
 > [!IMPORTANT]
 > The tool assumes, that the current working directory is the root of a challenge repository.  
 > Read more about the expected structure of a challenge repository in the **[Challenge repository structure documentation](#challenge-repository-structure)** section.
 
-You can then run the tool using python:
+You can then run the tool from the command line:
 
 ```sh
-python challenge-toolkit/src/ctf.py <command> [arguments] [options]
+challenge-toolkit <command> [arguments] [options]
 ```
 
 > [!IMPORTANT]
@@ -47,11 +45,7 @@ python challenge-toolkit/src/ctf.py <command> [arguments] [options]
 
 In order to use `create`, `template`, and `page` you need to copy the deployment templates into the `template/` directory of your challenge repository (In accordance with the **[Template structure](#template-structure)** section).
 
-This can be done by running:
-
-```sh
-cp -r challenge-toolkit/template/ .
-```
+Example templates can be found in the [`template` directory](./template)
 
 ### Environment Variables
 
@@ -65,32 +59,12 @@ The toolkit supports the following optional environment variables:
 
 Currently, the following dependencies are required:
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - `pyyaml` Python package
 - `python-slugify` Python package
 - Docker (for building challenge images with the `pipeline` command)
 
-`pyyaml` and `python-slugify` are defined in the `requirements.txt` file.
-
-### Including the tool in your project as a git submodule
-
-One way to include it into your own project is to add it as a git submodule:
-
-```sh
-git submodule add https://github.com/ctfpilot/challenge-toolkit
-```
-
-To then clone your own project with the submodule included, run:
-
-```sh
-git clone --recurse-submodules <your-repo-url>
-```
-
-Or if you already have cloned your repository, run:
-
-```sh
-git submodule update --init --recursive
-```
+Python dependencies are listed in the `pyproject.toml` file and are automatically installed when installing the package via pip or similar tools.
 
 ### Typical usage
 
@@ -156,7 +130,7 @@ DEFAULT = {
 The toolkit provides several commands to manage CTF challenges throughout their lifecycle. All commands follow the format:
 
 ```sh
-python challenge-toolkit/src/ctf.py <command> [arguments] [options]
+challenge-toolkit <command> [arguments] [options]
 ```
 
 ### Command Overview
@@ -180,7 +154,7 @@ Bootstrap a new challenge with the proper directory structure and template files
 > The new challenge will then be located in `challenges/<category>/<slug>/`.
 
 ```sh
-python challenge-toolkit/src/ctf.py create [options]
+challenge-toolkit create [options]
 ```
 
 **Options:**
@@ -208,10 +182,10 @@ python challenge-toolkit/src/ctf.py create [options]
 
 ```sh
 # Interactive mode (recommended for first-time users)
-python challenge-toolkit/src/ctf.py create
+challenge-toolkit create
 
 # Non-interactive mode with all parameters
-python challenge-toolkit/src/ctf.py create \
+challenge-toolkit create \
   --no-prompts \
   --name "SQL Injection 101" \
   --slug "sql-injection-101" \
@@ -235,7 +209,7 @@ Generate Kubernetes deployment files, ConfigMaps, or handout archives for challe
 > The command should be run from the root of a challenge repository, as it relies on the challenge directory structure defined in the [Challenge repository structure](#challenge-repository-structure) section.
 
 ```sh
-python challenge-toolkit/src/ctf.py template <renderer> <challenge> [options]
+challenge-toolkit template <renderer> <challenge> [options]
 ```
 
 **Arguments:**
@@ -298,18 +272,18 @@ python challenge-toolkit/src/ctf.py template <renderer> <challenge> [options]
 
 ```sh
 # Generate Kubernetes deployment files
-python challenge-toolkit/src/ctf.py template k8s web/sql-injection-101
+challenge-toolkit template k8s web/sql-injection-101
 
 # Generate ConfigMap with custom expiry time (2 hours) and repo
-python challenge-toolkit/src/ctf.py template configmap web/sql-injection-101 \
+challenge-toolkit template configmap web/sql-injection-101 \
   --expires 7200 \
   --repo ctfpilot/ctf-challenges
 
 # Create handout archive
-python challenge-toolkit/src/ctf.py template handout web/sql-injection-101
+challenge-toolkit template handout web/sql-injection-101
 
 # Clean generated files
-python challenge-toolkit/src/ctf.py template clean web/sql-injection-101
+challenge-toolkit template clean web/sql-injection-101
 ```
 
 ### `pipeline` - Build and tag Docker images
@@ -322,7 +296,7 @@ Build Docker images for challenges and tag them appropriately for container regi
 > The command should be run from the root of a challenge repository, as it relies on the challenge directory structure defined in the [Challenge repository structure](#challenge-repository-structure) section.
 
 ```sh
-python challenge-toolkit/src/ctf.py pipeline <challenge> <registry> <image_prefix> [options]
+challenge-toolkit pipeline <challenge> <registry> <image_prefix> [options]
 ```
 
 **Arguments:**
@@ -350,13 +324,13 @@ python challenge-toolkit/src/ctf.py pipeline <challenge> <registry> <image_prefi
 
 ```sh
 # Build and tag Docker image
-python challenge-toolkit/src/ctf.py pipeline \
+challenge-toolkit pipeline \
   web/sql-injection-101 \
   ghcr.io \
   ctfpilot/ctf-challenges
 
 # Build with custom suffix (e.g., for staging)
-python challenge-toolkit/src/ctf.py pipeline \
+challenge-toolkit pipeline \
   web/sql-injection-101 \
   ghcr.io \
   ctfpilot/ctf-challenges \
@@ -376,7 +350,7 @@ Generate Kubernetes ConfigMaps pages, following the [CTF Pilot's Page Schema](ht
 > The command should be run from the root of a challenge repository, as it relies on the challenge directory structure defined in the [Challenge repository structure](#challenge-repository-structure) section.
 
 ```sh
-python challenge-toolkit/src/ctf.py page <page> [options]
+challenge-toolkit page <page> [options]
 ```
 
 **Arguments:**
@@ -398,10 +372,10 @@ python challenge-toolkit/src/ctf.py page <page> [options]
 
 ```sh
 # Render a custom page
-python challenge-toolkit/src/ctf.py page rules --repo ctfpilot/ctf-challenges
+challenge-toolkit page rules --repo ctfpilot/ctf-challenges
 
 # Render about page
-python challenge-toolkit/src/ctf.py page about
+challenge-toolkit page about
 ```
 
 ### `slugify` - Convert strings to URL-safe slugs
@@ -411,7 +385,7 @@ Utility command to convert challenge names into URL-safe slugs following the too
 **Usage:**
 
 ```sh
-python challenge-toolkit/src/ctf.py slugify <name>
+challenge-toolkit slugify <name>
 ```
 
 **Arguments:**
@@ -424,11 +398,11 @@ python challenge-toolkit/src/ctf.py slugify <name>
 
 ```sh
 # Convert challenge name to slug
-python challenge-toolkit/src/ctf.py slugify "SQL Injection 101"
+challenge-toolkit slugify "SQL Injection 101"
 # Output: sql-injection-101
 
 # Convert with special characters
-python challenge-toolkit/src/ctf.py slugify "Web: XSS & CSRF"
+challenge-toolkit slugify "Web: XSS & CSRF"
 # Output: web-xss-csrf
 ```
 
@@ -462,7 +436,6 @@ The structure is as follows:
 ├── pages/
 │   └── page-1/
 ├── template/
-├── challenge-toolkit/
 └── <other files>
 ```
 

@@ -1,0 +1,37 @@
+[project]
+name = "challenge-toolkit"
+version = "1.1.3-dev"
+description = "CTF Pilot's Challenge Toolkit"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "EUPL-1.2"
+license-files = ["LICENSE"]
+authors = [
+  { name = "Mikkel Albrechtsen", email = "developer@themikkel.dk" },
+]
+maintainers = [
+  { name = "Mikkel Albrechtsen", email = "developer@themikkel.dk" },
+]
+keywords = [
+  "ctf",
+  "ctf-pilot",
+  "security",
+  "tools",
+]
+dependencies = [
+  "python-slugify==8.0.4",
+  "pyyaml==6.0.2",
+]
+
+[project.urls]
+Changelog = "https://github.com/ctfpilot/challenge-toolkit/releases/"
+Homepage = "https://github.com/ctfpilot/challenge-toolkit/"
+Issues = "https://github.com/ctfpilot/challenge-toolkit/issues/"
+Repository = "https://github.com/ctfpilot/challenge-toolkit.git"
+
+[project.scripts]
+challenge-toolkit = "challenge_toolkit.cli:main"
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
