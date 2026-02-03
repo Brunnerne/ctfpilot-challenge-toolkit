@@ -16,20 +16,14 @@ The Challenge Toolkit streamlines the entire CTF challenge lifecycle, from boots
 
 ## How to run
 
-> [!NOTE]
-> We are currently working on making it easier to use the tool.  
+The project uses standard Python packaging, therefore it can be installed by virtually any Python package manager.
 
-The current tool is only provided as the raw python files.  
-Therefore, in order to run the tool, first clone this repository:
-
-```sh
-git clone https://github.com/ctfpilot/challenge-toolkit
 ```
-
-In order to install required dependencies, run:
-
-```sh
-pip install -r challenge-toolkit/src/requirements.txt
+uv tool install git+https://github.com/ctfpilot/challenge-toolkit
+# or using pipx
+pipx install git+https://github.com/ctfpilot/challenge-toolkit
+# or using pip (be sure to use a virtual environment)
+pip install git+https://github.com/ctfpilot/challenge-toolkit
 ```
 
 > [!IMPORTANT]
