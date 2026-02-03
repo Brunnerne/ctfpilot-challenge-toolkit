@@ -30,7 +30,7 @@ pip install git+https://github.com/ctfpilot/challenge-toolkit
 > The tool assumes, that the current working directory is the root of a challenge repository.  
 > Read more about the expected structure of a challenge repository in the **[Challenge repository structure documentation](#challenge-repository-structure)** section.
 
-You can then run the tool using python:
+You can then run the tool from the command line:
 
 ```sh
 ctf-toolkit <command> [arguments] [options]
