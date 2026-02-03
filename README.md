@@ -47,6 +47,8 @@ This can be done by running:
 cp -r challenge-toolkit/template/ .
 ```
 
+Example templates can be found in the [`template` directory](./template)
+
 ### Environment Variables
 
 The toolkit supports the following optional environment variables:
