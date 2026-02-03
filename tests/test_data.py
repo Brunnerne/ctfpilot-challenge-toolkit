@@ -1,10 +1,11 @@
 import unittest
 import sys
 import json
+import pathlib
 
 sys.path.append('..')
 
-from library.data import DockerfileLocation, Challenge, ChallengeFlag, Page
+from challenge_toolkit.library.data import DockerfileLocation, Challenge, ChallengeFlag, Page
 
 class TestChallenge(unittest.TestCase):
     def setUp(self):
@@ -61,7 +62,7 @@ class TestChallenge(unittest.TestCase):
 
         self.challenge.set_difficulty("medium")
         self.assertEqual(self.challenge.difficulty, "medium")
-        
+
         self.challenge.set_tags(["new", "tags"])
         self.assertEqual(self.challenge.tags, ["new", "tags"])
 
@@ -70,13 +71,13 @@ class TestChallenge(unittest.TestCase):
 
         self.challenge.set_instanced_type("tcp")
         self.assertEqual(self.challenge.instanced_type, "tcp")
-        
+
         self.challenge.set_instanced_name("new-instanced-challenge")
         self.assertEqual(self.challenge.instanced_name, "new-instanced-challenge")
-        
+
         self.challenge.set_instanced_subdomains(["new-demo"])
         self.assertEqual(self.challenge.instanced_subdomains, ["new-demo"])
-        
+
         self.challenge.set_connection("nc new.example.com 4444")
         self.assertEqual(self.challenge.connection, "nc new.example.com 4444")
 
@@ -85,7 +86,7 @@ class TestChallenge(unittest.TestCase):
 
         self.challenge.set_points(1000)
         self.assertEqual(self.challenge.points, 1000)
-        
+
         self.challenge.set_decay(50)
         self.assertEqual(self.challenge.decay, 50)
 
@@ -217,7 +218,7 @@ class TestChallenge(unittest.TestCase):
                 description_location="description.md",
                 handout_dir="files"
             )
-            
+
     def test_too_long_connection(self):
         with self.assertRaises(ValueError):
             Challenge(
@@ -379,7 +380,7 @@ class TestChallenge(unittest.TestCase):
                 description_location="description.md",
                 handout_dir="files"
             )
-            
+
     def test_bad_tags(self):
         with self.assertRaises(ValueError):
             Challenge(
@@ -416,7 +417,7 @@ class TestChallenge(unittest.TestCase):
                 description_location="description.md",
                 handout_dir="files"
             )
-    
+
     def test_single_flag(self):
         challenge = Challenge(
             enabled=True,
@@ -488,7 +489,7 @@ class TestChallenge(unittest.TestCase):
                 description_location="description.md",
                 handout_dir="files"
             )
-            
+
     def test_missing_decay(self):
         Challenge(
             enabled=True,
@@ -560,7 +561,7 @@ class TestChallenge(unittest.TestCase):
                 description_location="description.md",
                 handout_dir="invalid/files/dir!"
             )
-            
+
     def test_bad_instanced_subdomains(self):
         with self.assertRaises(ValueError):
             Challenge(
@@ -618,7 +619,7 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertEqual(data["min_points"], 50)
         self.assertEqual(data["description_location"], "description.md")
         self.assertEqual(data["handout_dir"], "files")
-        
+
     def test_str_json_output_multiple_flags(self):
         schema_url = "http://example.com/schema.json"
         challenge = Challenge(
@@ -654,7 +655,7 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertEqual(data["min_points"], 50)
         self.assertEqual(data["description_location"], "description.md")
         self.assertEqual(data["handout_dir"], "files")
-    
+
     def test_str_json_output_multiple_flag_objects(self):
         schema_url = "http://example.com/schema.json"
         challenge = Challenge(
@@ -690,7 +691,7 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertEqual(data["min_points"], 50)
         self.assertEqual(data["description_location"], "description.md")
         self.assertEqual(data["handout_dir"], "files")
-    
+
     def test_str_json_output_special_chars(self):
         schema_url = "http://example.com/schema.json"
         challenge = Challenge(
@@ -768,7 +769,7 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertIn("min_points: 50", yml_str)
         self.assertIn("description_location: description.md", yml_str)
         self.assertIn("handout_dir: files", yml_str)
-        
+
     def test_str_yml_output_multiple_flags(self):
         schema_url = "http://example.com/schema.json"
         challenge = Challenge(
@@ -806,7 +807,7 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertIn("min_points: 50", yml_str)
         self.assertIn("description_location: description.md", yml_str)
         self.assertIn("handout_dir: files", yml_str)
-        
+
     def test_str_yml_output_multiple_flag_objects(self):
         schema_url = "http://example.com/schema.json"
         challenge = Challenge(
@@ -846,7 +847,7 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertIn("handout_dir: files", yml_str)
 
 class TestChallengeFileLoad(unittest.TestCase):
-    file_dir = 'tests/data'
+    file_dir = pathlib.Path(__file__).parent.joinpath('data')
     json_file = 'full-example.json'
     json_multi_flag_file = 'full-example-multi-flag.json'
     json_multi_flag_object_file = 'full-example-multi-flag-object.json'
@@ -855,7 +856,7 @@ class TestChallengeFileLoad(unittest.TestCase):
     yml_multi_flag_object_file = 'full-example-multi-flag-object.yml'
     yaml_file = 'full-example.yaml'
     minimal_example_file = 'minimal-example.yml'
-        
+
     def test_load_json(self):
         challenge = Challenge.load(f'{self.file_dir}/{self.json_file}')
         self.assertEqual(challenge.name, "Example Challenge")
@@ -873,7 +874,7 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.min_points, 50)
         self.assertEqual(challenge.description_location, "demo/description.md")
         self.assertEqual(challenge.handout_dir, "handouts")
-    
+
     def test_load_json_multi_flag(self):
         challenge = Challenge.load(f'{self.file_dir}/{self.json_multi_flag_file}')
         self.assertEqual(challenge.name, "Example Challenge Multi Flag")
@@ -891,7 +892,7 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.min_points, 100)
         self.assertEqual(challenge.description_location, "demo/description.md")
         self.assertEqual(challenge.handout_dir, "handouts")
-    
+
     def test_load_json_multi_flag_object(self):
         challenge = Challenge.load(f'{self.file_dir}/{self.json_multi_flag_object_file}')
         self.assertEqual(challenge.name, "Example Challenge Multi Flag")
@@ -909,7 +910,7 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.min_points, 100)
         self.assertEqual(challenge.description_location, "demo/description.md")
         self.assertEqual(challenge.handout_dir, "handouts")
-    
+
     def test_load_yml(self):
         challenge = Challenge.load(f'{self.file_dir}/{self.yml_file}')
         self.assertEqual(challenge.name, "Example Challenge")
@@ -946,7 +947,7 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.min_points, 100)
         self.assertEqual(challenge.description_location, "demo/description.md")
         self.assertEqual(challenge.handout_dir, "handouts")
-        
+
     def test_load_yml_multi_flag_object(self):
         challenge = Challenge.load(f'{self.file_dir}/{self.yml_multi_flag_object_file}')
         self.assertEqual(challenge.name, "Example Challenge Multi Flag")
@@ -982,7 +983,7 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.min_points, 50)
         self.assertEqual(challenge.description_location, "demo/description.md")
         self.assertEqual(challenge.handout_dir, "handouts")
-        
+
     def test_load_minimal_example(self):
         challenge = Challenge.load(f'{self.file_dir}/{self.minimal_example_file}')
         self.assertEqual(challenge.name, "Example Challenge")
@@ -1004,7 +1005,7 @@ class TestChallengeFileLoad(unittest.TestCase):
     def test_bad_file(self):
         with self.assertRaises(FileNotFoundError):
             Challenge.load(f'{self.file_dir}/invalid_challenge.json')
-            
+
     def test_bad_file_extension(self):
         with self.assertRaises(ValueError):
             Challenge.load(f'{self.file_dir}/invalid_challenge.txt')
