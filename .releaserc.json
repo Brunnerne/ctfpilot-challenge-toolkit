@@ -1,0 +1,51 @@
+{
+    "branches": [
+        "main",
+        {
+            "name": "develop",
+            "prerelease": "rc"
+        }
+    ],
+    "plugins": [
+        [
+            "@semantic-release/commit-analyzer",
+            {
+                "preset": "conventionalcommits"
+            }
+        ],
+        [
+            "@semantic-release/release-notes-generator",
+            {
+                "preset": "conventionalcommits"
+            }
+        ],
+        [
+            "@semantic-release/github",
+            {
+                "successComment": false
+            }
+        ],
+        [
+            "@semantic-release/exec",
+            {
+                "prepareCmd": "echo ${nextRelease.version} > version.txt",
+                "publishCmd": "echo 'Published version ${nextRelease.version}'"
+            }
+        ],
+        [
+            "semantic-release-pypi",
+            {
+                "pypiPublish": false
+            }
+        ],
+        [
+            "@semantic-release/git",
+            {
+                "assets": [
+                    "pyproject.toml"
+                ],
+                "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+            }
+        ]
+    ]
+}
