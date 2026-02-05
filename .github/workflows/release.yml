@@ -9,13 +9,15 @@ on:
 jobs:
   release:
     name: Release
-    uses: ctfpilot/ci/.github/workflows/release.yml@v1.3.0
+    uses: ctfpilot/ci/.github/workflows/release.yml@v1.4.0
     permissions:
       contents: write
       packages: write
       id-token: write
     secrets:
       RELEASE_GH_TOKEN: ${{ secrets.RELEASE_GH_TOKEN }}
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
     with:
       repository: ctfpilot/challenge-toolkit
+      plugins: "semantic-release-pypi"
       ENVIRONMENT: Release
