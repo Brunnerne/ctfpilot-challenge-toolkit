@@ -2,16 +2,16 @@ import os
 
 import argparse
 
-from commands.challenge_creator import ChallengeCreator
-from commands.template_renderer import TemplateRenderer
-from commands.page import PageCommand
-from commands.pipeline import DockerBuild 
-from commands.slugify import SlugifyCommand
+from challenge_toolkit.commands.challenge_creator import ChallengeCreator
+from challenge_toolkit.commands.template_renderer import TemplateRenderer
+from challenge_toolkit.commands.page import PageCommand
+from challenge_toolkit.commands.pipeline import DockerBuild
+from challenge_toolkit.commands.slugify import SlugifyCommand
 
 class Args:
     command = None
     parser = None
-    
+
     def __init__(self):
         self.parser = argparse.ArgumentParser(description="Challenge Toolkit CLI")
 
@@ -19,16 +19,16 @@ class Args:
         if self.parser:
             self.parser.print_help()
 
-if __name__ == "__main__":
+def main():
     try:
         args = Args()
-        
+
         if (args.parser is None):
             print("Error: Parser is not initialized.")
             exit(1)
-        
+
         subparser = args.parser.add_subparsers(dest="command", help="Subcommand to run", title="subcommands")
-        
+
         challengeCreator = ChallengeCreator(subparser)
         challengeCreator.register_subcommand()
         templateRenderer = TemplateRenderer(subparser)
@@ -43,7 +43,7 @@ if __name__ == "__main__":
         # Get subcommand to run
         namespace = args.parser.parse_args()
         command = namespace.command
-            
+
         # Call the appropriate tool based on the command
         if command == "create":
             challengeCreator.run()
@@ -62,6 +62,8 @@ if __name__ == "__main__":
         # Detect if we are running inside a Github runner
         if os.getenv("GITHUB_ACTIONS"):
             print(f"::error::An error occurred: {e}")
-        
+
         raise e
 
+if __name__ == "__main__":
+    main()

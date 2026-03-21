@@ -2,25 +2,25 @@ import sys
 import argparse
 import subprocess
 
-from library.utils import Utils
-from library.data import Challenge, DockerfileLocation
+from challenge_toolkit.library.utils import Utils
+from challenge_toolkit.library.data import Challenge, DockerfileLocation
 
 class Args:
     args = None
     subcommand = False
-    
+
     def __init__(self, parent_parser = None):
         if parent_parser:
             self.subcommand = True
             self.parser = parent_parser.add_parser("pipeline", help="Pipeline for CTF challenges")
         else:
             self.parser = argparse.ArgumentParser(description="Pipeline for CTF challenges")
-        
+
         self.parser.add_argument("challenge", help="Challenge to run (directory for challenge - 'web/example')")
         self.parser.add_argument("registry", help="Registry to push the Docker image to")
         self.parser.add_argument("image_prefix", help="Prefix for the Docker image")
         self.parser.add_argument("--image_suffix", help="Suffix for the Docker image", default="")
-    
+
     def parse(self):
         if self.subcommand:
             self.args = self.parser.parse_args(sys.argv[2:])
@@ -29,26 +29,26 @@ class Args:
 
     def __getattr__(self, name):
         return getattr(self.args, name)
-    
+
 class Docker:
     def __init__(self, registry: str, image_prefix: str, image_suffix: str):
         self.registry = registry
         self.image_prefix = image_prefix
         self.image_suffix = image_suffix
-    
+
     @staticmethod
     def build(registry: str, image_prefix: str, image_suffix: str, challenge: Challenge, dockerfile_location: DockerfileLocation):
         image_full = f"{registry}/{image_prefix}-{Utils.slugify(challenge.category)}-{challenge.slug}".lower()
-        
+
         if dockerfile_location.identifier and dockerfile_location.identifier.lower() not in ["none", "null", ""]:
             image_full += f"-{dockerfile_location.identifier}"
         if image_suffix and image_suffix.lower() not in ["none", "null", ""]:
             image_full += f"-{image_suffix}"
-            
+
         image_full = image_full.lower()
-        
+
         print(f"Building Docker image \"{image_full}\"...")
-        
+
         try:
             build_command = [
                 "docker", "build",
@@ -83,12 +83,12 @@ class DockerBuild:
     args = None
     parent_parser = None
 
-    def __init__(self, parent_parser = None):        
+    def __init__(self, parent_parser = None):
         self.parent_parser = parent_parser
-  
+
     def register_subcommand(self):
         self.args = Args(self.parent_parser)
-  
+
     def run(self):
         if not self.args:
             arguments = Args(self.parent_parser)
@@ -96,19 +96,19 @@ class DockerBuild:
             self.args = arguments
         else:
             self.args.parse()
-        
+
         args = self.args.args
-        
+
         if not args:
             print("No arguments provided")
             sys.exit(1)
-        
+
         challenge = args.challenge
-    
+
         if "/" not in challenge:
             print(f"Challenge {challenge} must be in the format 'category/name'")
             exit(1)
-        
+
         challenge_path = Utils.get_challenges_dir().joinpath(challenge)
         if not challenge_path.exists():
             print(f"Challenge {challenge} does not exist")
@@ -119,19 +119,19 @@ class DockerBuild:
             sys.exit(1)
 
         print(f"Running pipeline for challenge \"{challenge}\"")
-        
+
         print("Loading challenge data...")
         challenge = Challenge.load_dir(challenge_path)
         if not challenge:
             print("Failed to load challenge data")
             sys.exit(1)
-        
+
         print("Data loaded successfully")
         print("")
         print("Data:")
         print(challenge)
         print("")
-        
+
         version = challenge.get_version()
         print(f"Current version: {version}")
         print("Incrementing version...")
@@ -148,7 +148,6 @@ class DockerBuild:
             Docker.build(docker.registry, docker.image_prefix, docker.image_suffix, challenge, dockerfile_location)
 
         print("Docker process complete")
-    
+
 if __name__ == "__main__":
     DockerBuild().run()
-
