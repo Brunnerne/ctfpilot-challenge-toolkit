@@ -29,7 +29,7 @@
         [
             "semantic-release-pypi",
             {
-                "pypiPublish": false
+                "pypiPublish": true
             }
         ],
         [
