@@ -23,11 +23,11 @@ The project uses standard Python packaging, therefore it can be installed by vir
 > This can be done by adding `@<version>` at the end of the install command, such as `@v1.2.0` to pin the install to `v1.2.0`.
 
 ```
-uv tool install git+https://github.com/ctfpilot/challenge-toolkit
+uv tool install challenge-toolkit
 # or using pipx
-pipx install git+https://github.com/ctfpilot/challenge-toolkit
+pipx install challenge-toolkit
 # or using pip (be sure to use a virtual environment)
-pip install git+https://github.com/ctfpilot/challenge-toolkit
+pip install challenge-toolkit
 ```
 
 > [!IMPORTANT]
@@ -79,7 +79,7 @@ The tool is typically used in three scenarios:
 
 ### Configuration
 
-The toolkit can be configured, by configuring the `src/library/config.py` file.  
+The toolkit can be configured, by configuring the `src/challenge_toolkit/library/config.py` file.  
 This is important, if you have a custom challenge schema or page schema.
 
 Default values:
