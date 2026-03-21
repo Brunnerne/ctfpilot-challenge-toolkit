@@ -9,7 +9,7 @@ on:
 jobs:
   release:
     name: Release
-    uses: ctfpilot/ci/.github/workflows/release.yml@v1.4.0
+    uses: ctfpilot/ci/.github/workflows/release.yml@v1.5.0-r.1
     permissions:
       contents: write
       packages: write
@@ -21,3 +21,5 @@ jobs:
       repository: ctfpilot/challenge-toolkit
       plugins: "semantic-release-pypi"
       ENVIRONMENT: Release
+      INSTALL_UV: true
+

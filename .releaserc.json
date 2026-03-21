@@ -20,23 +20,24 @@
             }
         ],
         [
-            "@semantic-release/exec",
-            {
-                "prepareCmd": "echo ${nextRelease.version} > version.txt",
-                "publishCmd": "echo 'Published version ${nextRelease.version}'"
-            }
-        ],
-        [
             "semantic-release-pypi",
             {
                 "pypiPublish": true
             }
         ],
         [
+            "@semantic-release/exec",
+            {
+                "prepareCmd": "uv lock",
+                "publishCmd": "echo 'Published version ${nextRelease.version}'"
+            }
+        ],
+        [
             "@semantic-release/git",
             {
                 "assets": [
-                    "pyproject.toml"
+                    "pyproject.toml",
+                    "uv.lock"
                 ],
                 "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
             }
