@@ -1,6 +1,6 @@
 [project]
 name = "challenge-toolkit"
-version = "2.0.0rc1"
+version = "2.0.0"
 description = "CTF Pilot's Challenge Toolkit"
 readme = "README.md"
 requires-python = ">=3.10"
