@@ -60,6 +60,10 @@ class Args:
         if not self.repo or self.repo.strip() == "":
             print("GitHub repository is required. Please provide it via the --repo argument or the GITHUB_REPOSITORY environment variable.")
             sys.exit(1)
+            
+        # Ensure lowercase repo, as it is used within container image templating
+        # Github repository names are case-insensitive, but Docker image names are case-sensitive and must be lowercase.
+        self.repo = self.repo.lower()
 
     def __getattr__(self, name):
         return getattr(self.args, name)
