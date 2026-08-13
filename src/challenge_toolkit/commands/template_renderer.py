@@ -135,16 +135,11 @@ class K8s:
             print("Challenge does not have a k8s template.")
             sys.exit(0)
 
-        base_template_content, challenge_template, challenge_template_indented = self.get_template_content()
-
-        # If instanced, it needs to utilize the base template for instanced challenges
-        templateing_base_template = challenge_template
-        if self.challenge.type == "instanced":
-            templateing_base_template = base_template_content
+        _, challenge_template, _ = self.get_template_content()
 
         print(f"Rendering k8s template for challenge {args.challenge.slug}...")
 
-        output_content = templateing_base_template.replace("    %%TEMPLATE%%", challenge_template_indented)
+        output_content = challenge_template
 
         output_content = Renderer.replace_templated("CHALLENGE_NAME", args.challenge.slug, output_content)
         output_content = Renderer.replace_templated("CHALLENGE_CATEGORY", args.challenge.category, output_content)
