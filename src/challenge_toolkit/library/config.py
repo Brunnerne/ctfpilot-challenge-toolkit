@@ -33,7 +33,7 @@ DEFAULT = {
     "connection": None,
     "flag": {"flag": "null", "case_sensitive": False},
     "points": 1000,
-    "decay": 75,
+    "decay": 40,
     "min_points": 100,
     "description_location": "description.md",
     "handout_dir": "handout"
