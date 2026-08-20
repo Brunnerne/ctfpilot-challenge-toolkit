@@ -80,7 +80,7 @@ class Challenge:
     type: str
     tags: Optional[List[str]] = field(default_factory=list)
     instanced_type: str = DEFAULT['instanced_type']
-    instanced_name: Optional[str] = DEFAULT['instaned_name']
+    instanced_name: Optional[str] = DEFAULT['instanced_name']
     instanced_subdomains: List[str] = field(default_factory=list)
     connection: Optional[str] = DEFAULT['connection']
     flag: Optional[List[ChallengeFlag]] = None
@@ -89,7 +89,7 @@ class Challenge:
     decay: int = DEFAULT['decay']
     min_points: int = DEFAULT['min_points']
     description_location: str = DEFAULT['description_location']
-    handout_dir: str = DEFAULT['enahandout_dirbled']
+    handout_dir: str = DEFAULT['handout_dir']
     dockerfile_locations: List[DockerfileLocation] = field(default_factory=list)
     prerequisites: List[str] = field(default_factory=list)
     
