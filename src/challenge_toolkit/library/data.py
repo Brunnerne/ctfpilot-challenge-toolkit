@@ -246,6 +246,10 @@ class Challenge:
         self.tags = tags
         
     def set_points(self, points: int):
+        if points is None:
+            self.points = None
+            return
+
         if points < 1 or points > 10000:
             print("Points must be between 1 and 10000.")
             raise ValueError("Points must be between 1 and 10000.")
@@ -253,6 +257,10 @@ class Challenge:
         self.points = points
         
     def set_decay(self, decay: int):
+        if decay is None:
+            self.decay = None
+            return
+
         if decay < 0 or decay > 10000:
             print("Decay must be between 0 and 10000.")
             raise ValueError("Decay must be between 0 and 10000.")
@@ -260,6 +268,10 @@ class Challenge:
         self.decay = decay
         
     def set_min_points(self, min_points: int):
+        if min_points is None:
+            self.min_points = None
+            return
+
         if min_points < 1 or min_points > 1000:
             print("Minimum points must be between 1 and 1000.")
             raise ValueError("Minimum points must be between 1 and 1000.")
