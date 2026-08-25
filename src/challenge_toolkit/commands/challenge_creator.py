@@ -151,6 +151,10 @@ class Args:
             while True:
                 try:
                     challenge.set_instanced_type(input(f"Instanced type for challenge ({', '.join(INSTANCED_TYPES)}): ").lower())
+                    if challenge.instanced_type == "web":
+                        challenge.default_port = 80
+                    elif challenge.instanced_type == "tcp":
+                        challenge.default_port = 1337
                     break
                 except ValueError:
                     print("Invalid instanced type. Please try again.")

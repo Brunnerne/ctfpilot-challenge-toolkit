@@ -59,6 +59,7 @@ class Generator:
             self.k8s_directory()
             
             self.dockerfile()
+            self.compose_file()
             
             if self.challenge.type == "shared":
                 self.shared_template_file()
@@ -259,11 +260,34 @@ This file should contain the steps to solve the challenge.""")
             f.write("\n")
             f.write("USER challengeuser\n")
             f.write("\n")
+            f.write(f"EXPOSE {self.challenge.default_port}\n")
             
         print(f"File created: {path}")
         
         return True
-    
+
+    def compose_file_exists(self):
+        return self.check_if_dir_exists(os.path.join(self.dir_src, "compose.yaml"))
+
+    def compose_file(self):
+        if self.compose_file_exists():
+            print("Docker Compose file already exists!")
+            return False
+
+        # Create Docker Compose file
+        path = os.path.join(self.dir_src, "compose.yaml")
+        with open(path, "w") as f:
+            f.write(f"# Docker Compose file for {self.challenge.category} - {self.challenge.name}\n")
+            f.write("services:\n")
+            f.write(f"  {self.challenge.slug}:\n")
+            f.write("    build: .\n")
+            f.write("    ports:\n")
+            f.write(f"      - \"{self.challenge.default_port}:{self.challenge.default_port}\"\n")
+
+        print(f"File created: {path}")
+
+        return True
+
     def instanced_template_source_file_exists(self):
         return self.check_if_dir_exists(os.path.join(Utils.get_template_dir(), "instanced-web-k8s.yml")) and \
                self.check_if_dir_exists(os.path.join(Utils.get_template_dir(), "instanced-tcp-k8s.yml"))
