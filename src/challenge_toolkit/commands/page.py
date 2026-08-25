@@ -1,13 +1,13 @@
+import argparse
 import os
 import sys
-import argparse
-
 from datetime import datetime
 
-from challenge_toolkit.library.utils import Utils
+from challenge_toolkit.library.config import PAGE_SCHEMA
 from challenge_toolkit.library.data import Page
 from challenge_toolkit.library.generator import Generator
-from challenge_toolkit.library.config import PAGE_SCHEMA
+from challenge_toolkit.library.utils import Utils
+
 
 class Args:
     args = None
@@ -15,15 +15,25 @@ class Args:
     subcommand = False
     repo: str
 
-    def __init__(self, parent_parser = None):
+    def __init__(self, parent_parser=None):
         if parent_parser:
             self.subcommand = True
-            self.parser = parent_parser.add_parser("page", help="Render template for CTFd pages")
+            self.parser = parent_parser.add_parser(
+                "page", help="Render template for CTFd pages"
+            )
         else:
-            self.parser = argparse.ArgumentParser(description="Render template for CTFd pages")
+            self.parser = argparse.ArgumentParser(
+                description="Render template for CTFd pages"
+            )
 
-        self.parser.add_argument("page", help="Page to render (directory for page - 'web/example')")
-        self.parser.add_argument("--repo", help="GitHub repository for CTFd pages in the format 'owner/repo'", default=os.getenv("GITHUB_REPOSITORY", ""))
+        self.parser.add_argument(
+            "page", help="Page to render (directory for page - 'web/example')"
+        )
+        self.parser.add_argument(
+            "--repo",
+            help="GitHub repository for CTFd pages in the format 'owner/repo'",
+            default=os.getenv("GITHUB_REPOSITORY", ""),
+        )
 
     def parse(self):
         if self.subcommand:
@@ -47,16 +57,20 @@ class Args:
         self.repo = self.args.repo or os.getenv("GITHUB_REPOSITORY", "")
 
         if not self.repo or self.repo.strip() == "":
-            print("GitHub repository is required. Please provide it via the --repo argument or the GITHUB_REPOSITORY environment variable.")
+            print(
+                "GitHub repository is required. Please provide it via the --repo argument or the GITHUB_REPOSITORY environment variable."
+            )
             sys.exit(1)
 
     def __getattr__(self, name):
         return getattr(self.args, name)
 
+
 class PageRender:
-    '''
+    """
     Generate configmap for k8s, which contains the page json file
-    '''
+    """
+
     configmap_template = "page-configmap.yml"
     page: Page
 
@@ -81,7 +95,9 @@ class PageRender:
         template_source = self.page.str_json(PAGE_SCHEMA)
 
         # Iterate over each line in the source, and indent it
-        template_source_indented = "".join(["    " + line + "\n" for line in template_source.splitlines()])
+        template_source_indented = "".join(
+            ["    " + line + "\n" for line in template_source.splitlines()]
+        )
 
         return template_source_indented
 
@@ -106,12 +122,20 @@ class PageRender:
             rendered_content = f.read()
 
         # Iterate over each line in the source, and indent it
-        rendered_content_indented = "".join(["    " + line + "\n" for line in rendered_content.splitlines()])
+        rendered_content_indented = "".join(
+            ["    " + line + "\n" for line in rendered_content.splitlines()]
+        )
 
         return rendered_content_indented
 
     def render(self, args: Args):
-        if not os.path.exists(Utils.get_template_dir()) or not os.path.isdir(Utils.get_template_dir()) or not os.path.exists(os.path.join(Utils.get_template_dir(), self.configmap_template)):
+        if (
+            not os.path.exists(Utils.get_template_dir())
+            or not os.path.isdir(Utils.get_template_dir())
+            or not os.path.exists(
+                os.path.join(Utils.get_template_dir(), self.configmap_template)
+            )
+        ):
             print("Configmap template source file does not exist. Critical error.")
             sys.exit(1)
 
@@ -137,20 +161,32 @@ class PageRender:
         output_content = output_content_initial.replace("    %%CONTENT%%", content)
 
         # Template values in configmap
-        output_content = self.replace_templated("PAGE_SLUG", self.page.slug, output_content)
-        output_content = self.replace_templated("PAGE_NAME", self.page.slug, output_content)
-        output_content = self.replace_templated("PAGE_PATH", Utils.get_page_dir_str(self.page.slug), output_content)
+        output_content = self.replace_templated(
+            "PAGE_SLUG", self.page.slug, output_content
+        )
+        output_content = self.replace_templated(
+            "PAGE_NAME", self.page.slug, output_content
+        )
+        output_content = self.replace_templated(
+            "PAGE_PATH", Utils.get_page_dir_str(self.page.slug), output_content
+        )
         output_content = self.replace_templated("PAGE_REPO", args.repo, output_content)
-        output_content = self.replace_templated("PAGE_VERSION", str(args.page.get_version()), output_content)
-        output_content = self.replace_templated("PAGE_ENABLED", str(args.page.enabled).lower(), output_content)
+        output_content = self.replace_templated(
+            "PAGE_VERSION", str(args.page.get_version()), output_content
+        )
+        output_content = self.replace_templated(
+            "PAGE_ENABLED", str(args.page.enabled).lower(), output_content
+        )
 
         # Insert the current date, for knowing when the challenge was last updated
-        now = datetime.now()
+        now = datetime.now(tz="utc")
         current_date = now.strftime("%Y-%m-%d %H:%M:%S")
-        output_content = self.replace_templated("CURRENT_DATE", current_date, output_content)
+        output_content = self.replace_templated(
+            "CURRENT_DATE", current_date, output_content
+        )
 
         # Write the output to a file
-        output_file = os.path.join(Utils.get_k8s_page_dir(args.page.slug), f"page.yml")
+        output_file = os.path.join(Utils.get_k8s_page_dir(args.page.slug), "page.yml")
         if not os.path.exists(os.path.dirname(output_file)):
             os.makedirs(os.path.dirname(output_file))
 
@@ -159,11 +195,12 @@ class PageRender:
 
         print(f"Configmap generated at {output_file}")
 
+
 class PageCommand:
     args = None
     parent_parser = None
 
-    def __init__(self, parent_parser = None):
+    def __init__(self, parent_parser=None):
         self.parent_parser = parent_parser
 
     def register_subcommand(self):
@@ -184,6 +221,7 @@ class PageCommand:
             return
 
         PageRender(args.page).render(args)
+
 
 if __name__ == "__main__":
     PageCommand().run()

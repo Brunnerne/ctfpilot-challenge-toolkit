@@ -1,19 +1,24 @@
-import sys
 import argparse
+import sys
 
 from challenge_toolkit.library.utils import Utils
+
 
 class Args:
     args = None
     slug: str = ""
     subcommand = False
 
-    def __init__(self, parent_parser = None):
+    def __init__(self, parent_parser=None):
         if parent_parser:
             self.subcommand = True
-            self.parser = parent_parser.add_parser("slugify", help="Slugify a string for use in challenge slug")
+            self.parser = parent_parser.add_parser(
+                "slugify", help="Slugify a string for use in challenge slug"
+            )
         else:
-            self.parser = argparse.ArgumentParser(description="Slugify a string for use in challenge slug")
+            self.parser = argparse.ArgumentParser(
+                description="Slugify a string for use in challenge slug"
+            )
 
         self.parser.add_argument("name", help="Name to slugify")
 
@@ -29,6 +34,7 @@ class Args:
 
         self.slug = self.args.name
 
+
 class Slugify:
     @staticmethod
     def run(name: str) -> str:
@@ -37,11 +43,12 @@ class Slugify:
         """
         return Utils.slugify(name) or ""
 
+
 class SlugifyCommand:
     args = None
     parent_parser = None
 
-    def __init__(self, parent_parser = None):
+    def __init__(self, parent_parser=None):
         self.parent_parser = parent_parser
 
     def register_subcommand(self):

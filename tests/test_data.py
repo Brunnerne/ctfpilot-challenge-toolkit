@@ -1,11 +1,17 @@
-import unittest
-import sys
 import json
 import pathlib
+import sys
+import unittest
 
-sys.path.append('..')
+sys.path.append("..")
 
-from challenge_toolkit.library.data import DockerfileLocation, Challenge, ChallengeFlag, Page
+from challenge_toolkit.library.data import (
+    Challenge,
+    ChallengeFlag,
+    DockerfileLocation,
+    Page,
+)
+
 
 class TestChallenge(unittest.TestCase):
     def setUp(self):
@@ -26,7 +32,7 @@ class TestChallenge(unittest.TestCase):
             decay=100,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
 
     def test_initialization(self):
@@ -40,7 +46,10 @@ class TestChallenge(unittest.TestCase):
         self.assertEqual(self.challenge.instanced_type, "none")
         self.assertEqual(self.challenge.instanced_subdomains, ["demo"])
         self.assertEqual(self.challenge.connection, "nc example.com 1337")
-        self.assertEqual(self.challenge.flag, [ChallengeFlag(flag='ctfpilot{test_flag}', case_sensitive=False)])
+        self.assertEqual(
+            self.challenge.flag,
+            [ChallengeFlag(flag="ctfpilot{test_flag}", case_sensitive=False)],
+        )
         self.assertEqual(self.challenge.points, 500)
         self.assertEqual(self.challenge.decay, 100)
         self.assertEqual(self.challenge.min_points, 50)
@@ -82,7 +91,10 @@ class TestChallenge(unittest.TestCase):
         self.assertEqual(self.challenge.connection, "nc new.example.com 4444")
 
         self.challenge.set_flag("ctfpilot{new_flag}")
-        self.assertEqual(self.challenge.flag, [ChallengeFlag(flag='ctfpilot{new_flag}', case_sensitive=False)])
+        self.assertEqual(
+            self.challenge.flag,
+            [ChallengeFlag(flag="ctfpilot{new_flag}", case_sensitive=False)],
+        )
 
         self.challenge.set_points(1000)
         self.assertEqual(self.challenge.points, 1000)
@@ -103,7 +115,9 @@ class TestChallenge(unittest.TestCase):
         dockerfile_location = DockerfileLocation("src/Dockerfile", "src/", "identifier")
         self.challenge.add_dockerfile_location([dockerfile_location])
         self.assertEqual(len(self.challenge.dockerfile_locations), 1)
-        self.assertEqual(self.challenge.dockerfile_locations[0].location, "src/Dockerfile")
+        self.assertEqual(
+            self.challenge.dockerfile_locations[0].location, "src/Dockerfile"
+        )
 
     def test_add_prerequisite(self):
         self.challenge.add_prerequisite("prerequisite-challenge")
@@ -126,7 +140,7 @@ class TestChallenge(unittest.TestCase):
                 decay=100,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_missing_slug(self):
@@ -144,7 +158,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_missing_author(self):
@@ -162,7 +176,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_missing_category(self):
@@ -180,7 +194,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_missing_difficulty(self):
@@ -198,7 +212,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_missing_type(self):
@@ -216,7 +230,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_too_long_connection(self):
@@ -235,7 +249,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_missing_flag(self):
@@ -252,7 +266,7 @@ class TestChallenge(unittest.TestCase):
             points=500,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
 
     def test_bad_name(self):
@@ -270,7 +284,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_bad_slug(self):
@@ -288,7 +302,7 @@ class TestChallenge(unittest.TestCase):
             points=500,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
 
     def test_bad_author(self):
@@ -306,7 +320,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_none_example_category(self):
@@ -324,7 +338,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_bad_category(self):
@@ -342,7 +356,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_bad_difficulty(self):
@@ -360,7 +374,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_bad_type(self):
@@ -378,7 +392,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_bad_tags(self):
@@ -397,7 +411,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_bad_flag(self):
@@ -415,7 +429,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_single_flag(self):
@@ -432,9 +446,12 @@ class TestChallenge(unittest.TestCase):
             points=500,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
-        self.assertEqual(challenge.flag, [ChallengeFlag(flag='ctfpilot{test_flag}', case_sensitive=False)])
+        self.assertEqual(
+            challenge.flag,
+            [ChallengeFlag(flag="ctfpilot{test_flag}", case_sensitive=False)],
+        )
 
     def test_multiple_flags(self):
         challenge = Challenge(
@@ -450,9 +467,15 @@ class TestChallenge(unittest.TestCase):
             points=500,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
-        self.assertEqual(challenge.flag, [ChallengeFlag(flag='ctfpilot{test_flag1}', case_sensitive=False), ChallengeFlag(flag='ctfpilot{test_flag2}', case_sensitive=False)])
+        self.assertEqual(
+            challenge.flag,
+            [
+                ChallengeFlag(flag="ctfpilot{test_flag1}", case_sensitive=False),
+                ChallengeFlag(flag="ctfpilot{test_flag2}", case_sensitive=False),
+            ],
+        )
 
     def test_bad_points(self):
         with self.assertRaises(ValueError):
@@ -469,7 +492,7 @@ class TestChallenge(unittest.TestCase):
                 points=-1,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_bad_min_points(self):
@@ -487,7 +510,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=-1,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_missing_decay(self):
@@ -504,7 +527,7 @@ class TestChallenge(unittest.TestCase):
             points=500,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
 
     def test_bad_decay(self):
@@ -523,7 +546,7 @@ class TestChallenge(unittest.TestCase):
                 decay=-1,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_bad_description_location(self):
@@ -541,7 +564,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="invalid_description.txt",
-                handout_dir="files"
+                handout_dir="files",
             )
 
     def test_bad_handout_dir(self):
@@ -559,7 +582,7 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="invalid/files/dir!"
+                handout_dir="invalid/files/dir!",
             )
 
     def test_bad_instanced_subdomains(self):
@@ -578,8 +601,9 @@ class TestChallenge(unittest.TestCase):
                 points=500,
                 min_points=50,
                 description_location="description.md",
-                handout_dir="files"
+                handout_dir="files",
             )
+
 
 class TestChallengeFileWrite(unittest.TestCase):
     def test_str_json_output(self):
@@ -599,7 +623,7 @@ class TestChallengeFileWrite(unittest.TestCase):
             decay=100,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
         json_str = challenge.str_json(schema_url)
         data = json.loads(json_str)
@@ -613,7 +637,9 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertEqual(data["instanced_type"], "none")
         self.assertEqual(data["instanced_subdomains"], [])
         self.assertEqual(data["connection"], "nc example.com 1337")
-        self.assertEqual(data["flag"], [{'case_sensitive': False, 'flag': 'ctfpilot{test_flag}'}])
+        self.assertEqual(
+            data["flag"], [{"case_sensitive": False, "flag": "ctfpilot{test_flag}"}]
+        )
         self.assertEqual(data["points"], 500)
         self.assertEqual(data["decay"], 100)
         self.assertEqual(data["min_points"], 50)
@@ -636,7 +662,7 @@ class TestChallengeFileWrite(unittest.TestCase):
             decay=100,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
         json_str = challenge.str_json(schema_url)
         data = json.loads(json_str)
@@ -649,7 +675,13 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertEqual(data["type"], "static")
         self.assertEqual(data["instanced_type"], "none")
         self.assertEqual(data["connection"], None)
-        self.assertEqual(data["flag"], [{'case_sensitive': False, 'flag': 'ctfpilot{test_flag1}'}, {'case_sensitive': False, 'flag': 'ctfpilot{test_flag2}'}])
+        self.assertEqual(
+            data["flag"],
+            [
+                {"case_sensitive": False, "flag": "ctfpilot{test_flag1}"},
+                {"case_sensitive": False, "flag": "ctfpilot{test_flag2}"},
+            ],
+        )
         self.assertEqual(data["points"], 500)
         self.assertEqual(data["decay"], 100)
         self.assertEqual(data["min_points"], 50)
@@ -667,12 +699,15 @@ class TestChallengeFileWrite(unittest.TestCase):
             difficulty="easy",
             type="static",
             instanced_type="none",
-            flag=[ChallengeFlag(flag='ctfpilot{test_flag1}', case_sensitive=True), ChallengeFlag(flag='ctfpilot{test_flag2}', case_sensitive=False)],
+            flag=[
+                ChallengeFlag(flag="ctfpilot{test_flag1}", case_sensitive=True),
+                ChallengeFlag(flag="ctfpilot{test_flag2}", case_sensitive=False),
+            ],
             points=500,
             decay=100,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
         json_str = challenge.str_json(schema_url)
         data = json.loads(json_str)
@@ -685,7 +720,13 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertEqual(data["type"], "static")
         self.assertEqual(data["instanced_type"], "none")
         self.assertEqual(data["connection"], None)
-        self.assertEqual(data["flag"], [{'case_sensitive': True, 'flag': 'ctfpilot{test_flag1}'}, {'case_sensitive': False, 'flag': 'ctfpilot{test_flag2}'}])
+        self.assertEqual(
+            data["flag"],
+            [
+                {"case_sensitive": True, "flag": "ctfpilot{test_flag1}"},
+                {"case_sensitive": False, "flag": "ctfpilot{test_flag2}"},
+            ],
+        )
         self.assertEqual(data["points"], 500)
         self.assertEqual(data["decay"], 100)
         self.assertEqual(data["min_points"], 50)
@@ -708,7 +749,7 @@ class TestChallengeFileWrite(unittest.TestCase):
             points=500,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
         json_str = challenge.str_json(schema_url)
         data = json.loads(json_str)
@@ -722,7 +763,9 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertEqual(data["type"], "static")
         self.assertEqual(data["instanced_type"], "none")
         self.assertEqual(data["connection"], None)
-        self.assertEqual(data["flag"], [{'case_sensitive': False, 'flag': 'ctfpilot{test_flag\'`\"}'}])
+        self.assertEqual(
+            data["flag"], [{"case_sensitive": False, "flag": "ctfpilot{test_flag'`\"}"}]
+        )
         self.assertEqual(data["points"], 500)
         self.assertEqual(data["decay"], 75)
         self.assertEqual(data["min_points"], 50)
@@ -746,10 +789,12 @@ class TestChallengeFileWrite(unittest.TestCase):
             points=500,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
         yml_str = challenge.str_yml(schema_url)
-        self.assertTrue(yml_str.startswith(f"# yaml-language-server: $schema={schema_url}"))
+        self.assertTrue(
+            yml_str.startswith(f"# yaml-language-server: $schema={schema_url}")
+        )
         self.assertIn("name: Test Challenge", yml_str)
         self.assertIn("slug: test-challenge", yml_str)
         self.assertIn("author: Test Author", yml_str)
@@ -786,10 +831,12 @@ class TestChallengeFileWrite(unittest.TestCase):
             decay=100,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
         yml_str = challenge.str_yml(schema_url)
-        self.assertTrue(yml_str.startswith(f"# yaml-language-server: $schema={schema_url}"))
+        self.assertTrue(
+            yml_str.startswith(f"# yaml-language-server: $schema={schema_url}")
+        )
         self.assertIn("name: Test Challenge", yml_str)
         self.assertIn("slug: test-challenge", yml_str)
         self.assertIn("author: Test Author", yml_str)
@@ -819,15 +866,20 @@ class TestChallengeFileWrite(unittest.TestCase):
             difficulty="easy",
             type="static",
             instanced_type="none",
-            flag=[ChallengeFlag(flag='ctfpilot{test_flag1}', case_sensitive=True), ChallengeFlag(flag='ctfpilot{test_flag2}', case_sensitive=False)],
+            flag=[
+                ChallengeFlag(flag="ctfpilot{test_flag1}", case_sensitive=True),
+                ChallengeFlag(flag="ctfpilot{test_flag2}", case_sensitive=False),
+            ],
             points=500,
             decay=100,
             min_points=50,
             description_location="description.md",
-            handout_dir="files"
+            handout_dir="files",
         )
         yml_str = challenge.str_yml(schema_url)
-        self.assertTrue(yml_str.startswith(f"# yaml-language-server: $schema={schema_url}"))
+        self.assertTrue(
+            yml_str.startswith(f"# yaml-language-server: $schema={schema_url}")
+        )
         self.assertIn("name: Test Challenge", yml_str)
         self.assertIn("slug: test-challenge", yml_str)
         self.assertIn("author: Test Author", yml_str)
@@ -846,19 +898,20 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertIn("description_location: description.md", yml_str)
         self.assertIn("handout_dir: files", yml_str)
 
+
 class TestChallengeFileLoad(unittest.TestCase):
-    file_dir = pathlib.Path(__file__).parent.joinpath('data')
-    json_file = 'full-example.json'
-    json_multi_flag_file = 'full-example-multi-flag.json'
-    json_multi_flag_object_file = 'full-example-multi-flag-object.json'
-    yml_file = 'full-example.yml'
-    yml_multi_flag_file = 'full-example-multi-flag.yml'
-    yml_multi_flag_object_file = 'full-example-multi-flag-object.yml'
-    yaml_file = 'full-example.yaml'
-    minimal_example_file = 'minimal-example.yml'
+    file_dir = pathlib.Path(__file__).parent.joinpath("data")
+    json_file = "full-example.json"
+    json_multi_flag_file = "full-example-multi-flag.json"
+    json_multi_flag_object_file = "full-example-multi-flag-object.json"
+    yml_file = "full-example.yml"
+    yml_multi_flag_file = "full-example-multi-flag.yml"
+    yml_multi_flag_object_file = "full-example-multi-flag-object.yml"
+    yaml_file = "full-example.yaml"
+    minimal_example_file = "minimal-example.yml"
 
     def test_load_json(self):
-        challenge = Challenge.load(f'{self.file_dir}/{self.json_file}')
+        challenge = Challenge.load(f"{self.file_dir}/{self.json_file}")
         self.assertEqual(challenge.name, "Example Challenge")
         self.assertEqual(challenge.slug, "example-challenge")
         self.assertEqual(challenge.author, "John Smith")
@@ -868,7 +921,9 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.type, "static")
         self.assertEqual(challenge.instanced_type, "none")
         self.assertEqual(challenge.connection, "nc example.com 1337")
-        self.assertEqual(challenge.flag, [ChallengeFlag(flag='ctfpilot{flag}', case_sensitive=False)])
+        self.assertEqual(
+            challenge.flag, [ChallengeFlag(flag="ctfpilot{flag}", case_sensitive=False)]
+        )
         self.assertEqual(challenge.points, 500)
         self.assertEqual(challenge.decay, 100)
         self.assertEqual(challenge.min_points, 50)
@@ -876,7 +931,7 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.handout_dir, "handouts")
 
     def test_load_json_multi_flag(self):
-        challenge = Challenge.load(f'{self.file_dir}/{self.json_multi_flag_file}')
+        challenge = Challenge.load(f"{self.file_dir}/{self.json_multi_flag_file}")
         self.assertEqual(challenge.name, "Example Challenge Multi Flag")
         self.assertEqual(challenge.slug, "example-challenge-multi-flag")
         self.assertEqual(challenge.author, "Jane Doe")
@@ -886,7 +941,13 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.type, "shared")
         self.assertEqual(challenge.instanced_type, "web")
         self.assertEqual(challenge.connection, None)
-        self.assertEqual(challenge.flag, [ChallengeFlag(flag='ctfpilot{flag1}', case_sensitive=False), ChallengeFlag(flag='ctfpilot{flag2}', case_sensitive=False)])
+        self.assertEqual(
+            challenge.flag,
+            [
+                ChallengeFlag(flag="ctfpilot{flag1}", case_sensitive=False),
+                ChallengeFlag(flag="ctfpilot{flag2}", case_sensitive=False),
+            ],
+        )
         self.assertEqual(challenge.points, 1000)
         self.assertEqual(challenge.decay, 75)
         self.assertEqual(challenge.min_points, 100)
@@ -894,7 +955,9 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.handout_dir, "handouts")
 
     def test_load_json_multi_flag_object(self):
-        challenge = Challenge.load(f'{self.file_dir}/{self.json_multi_flag_object_file}')
+        challenge = Challenge.load(
+            f"{self.file_dir}/{self.json_multi_flag_object_file}"
+        )
         self.assertEqual(challenge.name, "Example Challenge Multi Flag")
         self.assertEqual(challenge.slug, "example-challenge-multi-flag")
         self.assertEqual(challenge.author, "Jane Doe")
@@ -904,7 +967,13 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.type, "shared")
         self.assertEqual(challenge.instanced_type, "web")
         self.assertEqual(challenge.connection, None)
-        self.assertEqual(challenge.flag, [ChallengeFlag(flag='ctfpilot{flag1}', case_sensitive=True), ChallengeFlag(flag='ctfpilot{flag2}', case_sensitive=False)])
+        self.assertEqual(
+            challenge.flag,
+            [
+                ChallengeFlag(flag="ctfpilot{flag1}", case_sensitive=True),
+                ChallengeFlag(flag="ctfpilot{flag2}", case_sensitive=False),
+            ],
+        )
         self.assertEqual(challenge.points, 1000)
         self.assertEqual(challenge.decay, 75)
         self.assertEqual(challenge.min_points, 100)
@@ -912,7 +981,7 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.handout_dir, "handouts")
 
     def test_load_yml(self):
-        challenge = Challenge.load(f'{self.file_dir}/{self.yml_file}')
+        challenge = Challenge.load(f"{self.file_dir}/{self.yml_file}")
         self.assertEqual(challenge.name, "Example Challenge")
         self.assertEqual(challenge.slug, "example-challenge")
         self.assertEqual(challenge.author, "John Smith")
@@ -923,7 +992,9 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.instanced_type, "none")
         self.assertEqual(challenge.instanced_subdomains, ["demo"])
         self.assertEqual(challenge.connection, "nc example.com 1337")
-        self.assertEqual(challenge.flag, [ChallengeFlag(flag='ctfpilot{flag}', case_sensitive=False)])
+        self.assertEqual(
+            challenge.flag, [ChallengeFlag(flag="ctfpilot{flag}", case_sensitive=False)]
+        )
         self.assertEqual(challenge.points, 500)
         self.assertEqual(challenge.decay, 100)
         self.assertEqual(challenge.min_points, 50)
@@ -931,7 +1002,7 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.handout_dir, "handouts")
 
     def test_load_yml_multi_flag(self):
-        challenge = Challenge.load(f'{self.file_dir}/{self.yml_multi_flag_file}')
+        challenge = Challenge.load(f"{self.file_dir}/{self.yml_multi_flag_file}")
         self.assertEqual(challenge.name, "Example Challenge Multi Flag")
         self.assertEqual(challenge.slug, "example-challenge-multi-flag")
         self.assertEqual(challenge.author, "Jane Doe")
@@ -941,7 +1012,13 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.type, "shared")
         self.assertEqual(challenge.instanced_type, "web")
         self.assertEqual(challenge.connection, None)
-        self.assertEqual(challenge.flag, [ChallengeFlag(flag='ctfpilot{flag1}', case_sensitive=False), ChallengeFlag(flag='ctfpilot{flag2}', case_sensitive=False)])
+        self.assertEqual(
+            challenge.flag,
+            [
+                ChallengeFlag(flag="ctfpilot{flag1}", case_sensitive=False),
+                ChallengeFlag(flag="ctfpilot{flag2}", case_sensitive=False),
+            ],
+        )
         self.assertEqual(challenge.points, 1000)
         self.assertEqual(challenge.decay, 75)
         self.assertEqual(challenge.min_points, 100)
@@ -949,7 +1026,7 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.handout_dir, "handouts")
 
     def test_load_yml_multi_flag_object(self):
-        challenge = Challenge.load(f'{self.file_dir}/{self.yml_multi_flag_object_file}')
+        challenge = Challenge.load(f"{self.file_dir}/{self.yml_multi_flag_object_file}")
         self.assertEqual(challenge.name, "Example Challenge Multi Flag")
         self.assertEqual(challenge.slug, "example-challenge-multi-flag")
         self.assertEqual(challenge.author, "Jane Doe")
@@ -959,7 +1036,13 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.type, "shared")
         self.assertEqual(challenge.instanced_type, "web")
         self.assertEqual(challenge.connection, None)
-        self.assertEqual(challenge.flag, [ChallengeFlag(flag='ctfpilot{flag1}', case_sensitive=True), ChallengeFlag(flag='ctfpilot{flag2}', case_sensitive=False)])
+        self.assertEqual(
+            challenge.flag,
+            [
+                ChallengeFlag(flag="ctfpilot{flag1}", case_sensitive=True),
+                ChallengeFlag(flag="ctfpilot{flag2}", case_sensitive=False),
+            ],
+        )
         self.assertEqual(challenge.points, 1000)
         self.assertEqual(challenge.decay, 75)
         self.assertEqual(challenge.min_points, 100)
@@ -967,7 +1050,7 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.handout_dir, "handouts")
 
     def test_load_yaml(self):
-        challenge = Challenge.load(f'{self.file_dir}/{self.yaml_file}')
+        challenge = Challenge.load(f"{self.file_dir}/{self.yaml_file}")
         self.assertEqual(challenge.name, "Example Challenge")
         self.assertEqual(challenge.slug, "example-challenge")
         self.assertEqual(challenge.author, "John Smith")
@@ -978,14 +1061,16 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.instanced_type, "none")
         self.assertEqual(challenge.instanced_subdomains, [])
         self.assertEqual(challenge.connection, "nc example.com 1337")
-        self.assertEqual(challenge.flag, [ChallengeFlag(flag='ctfpilot{flag}', case_sensitive=False)])
+        self.assertEqual(
+            challenge.flag, [ChallengeFlag(flag="ctfpilot{flag}", case_sensitive=False)]
+        )
         self.assertEqual(challenge.points, 500)
         self.assertEqual(challenge.min_points, 50)
         self.assertEqual(challenge.description_location, "demo/description.md")
         self.assertEqual(challenge.handout_dir, "handouts")
 
     def test_load_minimal_example(self):
-        challenge = Challenge.load(f'{self.file_dir}/{self.minimal_example_file}')
+        challenge = Challenge.load(f"{self.file_dir}/{self.minimal_example_file}")
         self.assertEqual(challenge.name, "Example Challenge")
         self.assertEqual(challenge.slug, "example-challenge")
         self.assertEqual(challenge.author, "John Smith")
@@ -995,7 +1080,9 @@ class TestChallengeFileLoad(unittest.TestCase):
         self.assertEqual(challenge.type, "static")
         self.assertEqual(challenge.instanced_type, "none")
         self.assertEqual(challenge.connection, None)
-        self.assertEqual(challenge.flag, [ChallengeFlag(flag='ctfpilot{flag}', case_sensitive=False)])
+        self.assertEqual(
+            challenge.flag, [ChallengeFlag(flag="ctfpilot{flag}", case_sensitive=False)]
+        )
         self.assertEqual(challenge.points, 1000)
         self.assertEqual(challenge.decay, 75)
         self.assertEqual(challenge.min_points, 100)
@@ -1004,14 +1091,14 @@ class TestChallengeFileLoad(unittest.TestCase):
 
     def test_bad_file(self):
         with self.assertRaises(FileNotFoundError):
-            Challenge.load(f'{self.file_dir}/invalid_challenge.json')
+            Challenge.load(f"{self.file_dir}/invalid_challenge.json")
 
     def test_bad_file_extension(self):
         with self.assertRaises(ValueError):
-            Challenge.load(f'{self.file_dir}/invalid_challenge.txt')
+            Challenge.load(f"{self.file_dir}/invalid_challenge.txt")
+
 
 class TestPage(unittest.TestCase):
-
     def test_page_initialization(self):
         page = Page(
             enabled=True,
@@ -1021,7 +1108,7 @@ class TestPage(unittest.TestCase):
             content="example.md",
             format="markdown",
             auth=True,
-            draft=False
+            draft=False,
         )
         self.assertTrue(page.enabled)
         self.assertEqual(page.slug, "example-page")
@@ -1084,7 +1171,7 @@ class TestPage(unittest.TestCase):
             content="example.md",
             format="markdown",
             auth=True,
-            draft=False
+            draft=False,
         )
         schema_location = "http://example.com/schema.json"
         page_dict = page.generate_dict(schema_location)
@@ -1108,7 +1195,7 @@ class TestPage(unittest.TestCase):
             content="example.md",
             format="markdown",
             auth=True,
-            draft=False
+            draft=False,
         )
         json_str = page.str_json(schema_url)
         data = json.loads(json_str)
@@ -1131,10 +1218,12 @@ class TestPage(unittest.TestCase):
             content="example.md",
             format="markdown",
             auth=True,
-            draft=False
+            draft=False,
         )
         yml_str = page.str_yml(schema_url)
-        self.assertTrue(yml_str.startswith(f"# yaml-language-server: $schema={schema_url}"))
+        self.assertTrue(
+            yml_str.startswith(f"# yaml-language-server: $schema={schema_url}")
+        )
         self.assertIn("slug: example-page", yml_str)
         self.assertIn("title: Example Page", yml_str)
         self.assertIn("route: /example-page", yml_str)
@@ -1152,7 +1241,7 @@ class TestPage(unittest.TestCase):
             "content": "example.md",
             "format": "markdown",
             "auth": True,
-            "draft": False
+            "draft": False,
         }
         page = Page.load_from_json(json_data)
         self.assertTrue(page.enabled)
@@ -1173,7 +1262,7 @@ class TestPage(unittest.TestCase):
             "content": "example.md",
             "format": "markdown",
             "auth": True,
-            "draft": False
+            "draft": False,
         }
         page = Page.load_from_yaml(yaml_data)
         self.assertTrue(page.enabled)
@@ -1185,5 +1274,6 @@ class TestPage(unittest.TestCase):
         self.assertTrue(page.auth)
         self.assertFalse(page.draft)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     print("Tests cannot be run directly. Please run test.py")

@@ -1,12 +1,13 @@
-import os
-
 import argparse
+import os
+import sys
 
 from challenge_toolkit.commands.challenge_creator import ChallengeCreator
-from challenge_toolkit.commands.template_renderer import TemplateRenderer
 from challenge_toolkit.commands.page import PageCommand
 from challenge_toolkit.commands.pipeline import DockerBuild
 from challenge_toolkit.commands.slugify import SlugifyCommand
+from challenge_toolkit.commands.template_renderer import TemplateRenderer
+
 
 class Args:
     command = None
@@ -19,15 +20,18 @@ class Args:
         if self.parser:
             self.parser.print_help()
 
+
 def main():
     try:
         args = Args()
 
-        if (args.parser is None):
+        if args.parser is None:
             print("Error: Parser is not initialized.")
-            exit(1)
+            sys.exit(1)
 
-        subparser = args.parser.add_subparsers(dest="command", help="Subcommand to run", title="subcommands")
+        subparser = args.parser.add_subparsers(
+            dest="command", help="Subcommand to run", title="subcommands"
+        )
 
         challengeCreator = ChallengeCreator(subparser)
         challengeCreator.register_subcommand()
@@ -57,13 +61,14 @@ def main():
             slugify.run()
         else:
             args.print_help()
-            exit(1)
+            sys.exit(1)
     except Exception as e:
         # Detect if we are running inside a Github runner
         if os.getenv("GITHUB_ACTIONS"):
             print(f"::error::An error occurred: {e}")
 
-        raise e
+        raise
+
 
 if __name__ == "__main__":
     main()
