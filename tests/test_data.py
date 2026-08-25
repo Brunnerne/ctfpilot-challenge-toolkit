@@ -767,7 +767,6 @@ class TestChallengeFileWrite(unittest.TestCase):
             data["flag"], [{"case_sensitive": False, "flag": "ctfpilot{test_flag'`\"}"}]
         )
         self.assertEqual(data["points"], 500)
-        self.assertEqual(data["decay"], 75)
         self.assertEqual(data["min_points"], 50)
         self.assertEqual(data["description_location"], "description.md")
         self.assertEqual(data["handout_dir"], "files")
@@ -810,7 +809,6 @@ class TestChallengeFileWrite(unittest.TestCase):
         self.assertIn("- flag: ctfpilot{test_flag}", yml_str)
         self.assertIn("  case_sensitive: false", yml_str)
         self.assertIn("points: 500", yml_str)
-        self.assertIn("decay: 75", yml_str)
         self.assertIn("min_points: 50", yml_str)
         self.assertIn("description_location: description.md", yml_str)
         self.assertIn("handout_dir: files", yml_str)
@@ -949,7 +947,6 @@ class TestChallengeFileLoad(unittest.TestCase):
             ],
         )
         self.assertEqual(challenge.points, 1000)
-        self.assertEqual(challenge.decay, 75)
         self.assertEqual(challenge.min_points, 100)
         self.assertEqual(challenge.description_location, "demo/description.md")
         self.assertEqual(challenge.handout_dir, "handouts")
@@ -975,7 +972,6 @@ class TestChallengeFileLoad(unittest.TestCase):
             ],
         )
         self.assertEqual(challenge.points, 1000)
-        self.assertEqual(challenge.decay, 75)
         self.assertEqual(challenge.min_points, 100)
         self.assertEqual(challenge.description_location, "demo/description.md")
         self.assertEqual(challenge.handout_dir, "handouts")
@@ -1020,7 +1016,6 @@ class TestChallengeFileLoad(unittest.TestCase):
             ],
         )
         self.assertEqual(challenge.points, 1000)
-        self.assertEqual(challenge.decay, 75)
         self.assertEqual(challenge.min_points, 100)
         self.assertEqual(challenge.description_location, "demo/description.md")
         self.assertEqual(challenge.handout_dir, "handouts")
@@ -1044,7 +1039,6 @@ class TestChallengeFileLoad(unittest.TestCase):
             ],
         )
         self.assertEqual(challenge.points, 1000)
-        self.assertEqual(challenge.decay, 75)
         self.assertEqual(challenge.min_points, 100)
         self.assertEqual(challenge.description_location, "demo/description.md")
         self.assertEqual(challenge.handout_dir, "handouts")
@@ -1084,7 +1078,6 @@ class TestChallengeFileLoad(unittest.TestCase):
             challenge.flag, [ChallengeFlag(flag="ctfpilot{flag}", case_sensitive=False)]
         )
         self.assertEqual(challenge.points, 1000)
-        self.assertEqual(challenge.decay, 75)
         self.assertEqual(challenge.min_points, 100)
         self.assertEqual(challenge.description_location, "description.md")
         self.assertEqual(challenge.handout_dir, "handout")
