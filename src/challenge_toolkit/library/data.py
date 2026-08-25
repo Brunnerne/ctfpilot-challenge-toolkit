@@ -172,6 +172,10 @@ class Challenge:
 
         self.prerequisites = []
         self.dockerfile_locations = []
+        if self.instanced_type == "tcp":
+            self.default_port = 1337
+        elif self.instanced_type == "web":
+            self.default_port = 80
         
     
     def set_enabled(self, enabled: bool):

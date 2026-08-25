@@ -59,6 +59,7 @@ class Generator:
             self.k8s_directory()
             
             self.dockerfile()
+            self.compose_file()
             
             if self.challenge.type == "shared":
                 self.shared_template_file()
@@ -210,8 +211,9 @@ This file should contain the steps to solve the challenge.""")
         path = os.path.join(self.path, "README.md")
         with open(path, "w") as f:
             f.write(f"# {self.challenge.name}\n\n")
-            f.write("*Add information about challenge here*  \n")
-            f.write("*It is meant to contain internal documentation of the challenge, such as how it is solved*\n")
+            f.write("*Add information about the challenge here*  \n")
+            f.write("*This includes all internal documentation about the challenge, such as what it is about and how to run it locally if applicable.  *\n")
+            f.write("*The solution should be documented in [solution/README.md](solution/README.md).*")
             
         print(f"File created: {path}")
         
@@ -258,11 +260,34 @@ This file should contain the steps to solve the challenge.""")
             f.write("\n")
             f.write("USER challengeuser\n")
             f.write("\n")
+            f.write(f"EXPOSE {self.challenge.default_port}\n")
             
         print(f"File created: {path}")
         
         return True
-    
+
+    def compose_file_exists(self):
+        return self.check_if_dir_exists(os.path.join(self.dir_src, "compose.yaml"))
+
+    def compose_file(self):
+        if self.compose_file_exists():
+            print("Docker Compose file already exists!")
+            return False
+
+        # Create Docker Compose file
+        path = os.path.join(self.dir_src, "compose.yaml")
+        with open(path, "w") as f:
+            f.write(f"# Docker Compose file for {self.challenge.category} - {self.challenge.name}\n")
+            f.write("services:\n")
+            f.write(f"  {self.challenge.slug}:\n")
+            f.write("    build: .\n")
+            f.write("    ports:\n")
+            f.write(f"      - \"{self.challenge.default_port}:{self.challenge.default_port}\"\n")
+
+        print(f"File created: {path}")
+
+        return True
+
     def instanced_template_source_file_exists(self):
         return self.check_if_dir_exists(os.path.join(Utils.get_template_dir(), "instanced-web-k8s.yml")) and \
                self.check_if_dir_exists(os.path.join(Utils.get_template_dir(), "instanced-tcp-k8s.yml"))
