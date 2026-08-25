@@ -210,8 +210,9 @@ This file should contain the steps to solve the challenge.""")
         path = os.path.join(self.path, "README.md")
         with open(path, "w") as f:
             f.write(f"# {self.challenge.name}\n\n")
-            f.write("*Add information about challenge here*  \n")
-            f.write("*It is meant to contain internal documentation of the challenge, such as how it is solved*\n")
+            f.write("*Add information about the challenge here*  \n")
+            f.write("*This includes all internal documentation about the challenge, such as what it is about and how to run it locally if applicable.  *\n")
+            f.write("*The solution should be documented in [solution/README.md](solution/README.md).*")
             
         print(f"File created: {path}")
         
