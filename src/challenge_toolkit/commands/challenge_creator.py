@@ -75,7 +75,7 @@ class Args:
             "--dockerfile-identifier", help="Identifier of the Dockerfile", default=None
         )
         self.parser.add_argument(
-            "--handout_location", help="Location of the handout", default="handout"
+            "--handout-location", help="Location of the handout", default="handout"
         )
 
     def parse(self):
@@ -84,165 +84,113 @@ class Args:
         else:
             self.args = self.parser.parse_args()
 
-    def prompt(self, challenge: Challenge):
+    def prompt_arg(self, arg, text, validator, default=None):
+        # If set as arg, return this unless it's just the default
+        if arg is not None and (default is None or arg == default):
+            return arg
+
+        default_text = f" ({default})" if default else ""
+        while True:
+            try:
+                result = input(f"{text}{default_text}: ")
+                if default is not None and result == "":
+                    result = default
+                validator(result)
+                return result
+            except (ValueError, TypeError) as e:
+                print(e)
+
+    def prompt(self) -> Challenge:
         args = self.args
 
         if args is None:
             # Convert to object if args is None
             args = self.args = self.parser.parse_args()
 
-        # Ensure args is not None before accessing its attributes
-        if args.name is None:
-            while True:
-                try:
-                    challenge.set_name(input("Name of the challenge: "))
-                    break
-                except ValueError:
-                    print("Invalid name. Please try again.")
-        else:
-            challenge.set_name(args.name)
+        name = self.prompt_arg(args.name, "Challenge name", Challenge.validate_name)
+        slug = self.prompt_arg(
+            args.slug,
+            "Challenge slug",
+            Challenge.validate_slug,
+            default=Utils.slugify(name) or "challenge",
+        )
+        author = self.prompt_arg(
+            args.author, "Challenge author", Challenge.validate_author
+        )
+        category = self.prompt_arg(
+            args.category,
+            f"Challenge category ({', '.join(CATEGORIES)})",
+            Challenge.validate_category,
+        ).lower()
+        difficulty = self.prompt_arg(
+            args.difficulty,
+            f"Challenge difficulty ({', '.join(DIFFICULTIES)})",
+            Challenge.validate_difficulty,
+        )
+        chall_type = self.prompt_arg(
+            args.type,
+            "Challenge type",
+            Challenge.validate_type,
+            default=", ".join(CHALL_TYPES),
+        )
+        flag = self.prompt_arg(
+            args.flag, "Challenge flag", Challenge.validate_flag, FLAG_FORMAT
+        )
+        points = int(
+            self.prompt_arg(args.points, "Challenge points", Challenge.validate_points, 1000),
+        )
+        min_points = int(
+            self.prompt_arg(
+                args.min_points,
+                "Challenge minimum points",
+                Challenge.validate_min_points,
+                100,
+            )
+        )
+        decay = int(
+            self.prompt_arg(args.decay, "Challenge point decay", Challenge.validate_decay, 75),
+        )
 
-        if args.slug is None:
-            while True:
-                try:
-                    challenge.set_slug(
-                        input(
-                            f"Slug of the challenge ({Utils.slugify(challenge.name)}): "
-                        )
-                        or Utils.slugify(challenge.name)
-                        or "challenge"
-                    )
-                    break
-                except ValueError:
-                    print("Invalid slug. Please try again.")
+        if chall_type in ("instanced", "shared"):
+            instanced_type = self.prompt_arg(
+                args.instanced_type,
+                f"Instanced type ({', '.join(INSTANCED_TYPES)})",
+                Challenge.validate_instanced_type,
+            ).lower()
         else:
-            challenge.set_slug(args.slug)
+            instanced_type = "none"
+        
+        description_location = self.prompt_arg(
+            args.description_location,
+            "Location of the description file",
+            Challenge.validate_description_location,
+            default="description.md"
+        )
+        
+        handout_location = self.prompt_arg(
+            args.handout_location,
+            "Location of handout folder",
+            Challenge.validate_handout_dir,
+            default="handout"
+        )
+        
+        challenge = Challenge(
+            name=name,
+            slug=slug,
+            author=author,
+            category=category,
+            difficulty=difficulty,
+            type=chall_type,
+            instanced_type=instanced_type,
+            flag=flag,
+            points=points,
+            decay=decay,
+            min_points=min_points,
+            description_location=description_location,
+            handout_dir=handout_location
+        )
 
-        if args.author is None:
-            while True:
-                try:
-                    challenge.set_author(input("Author of the challenge: "))
-                    break
-                except ValueError:
-                    print("Invalid author. Please try again.")
-        else:
-            challenge.set_author(args.author)
-
-        if args.category is None:
-            while True:
-                try:
-                    challenge.set_category(
-                        input(
-                            f"Category of the challenge ({', '.join(CATEGORIES)}): "
-                        ).lower()
-                    )
-                    break
-                except ValueError:
-                    print("Invalid category. Please try again.")
-        else:
-            challenge.set_category(args.category)
-
-        if args.difficulty is None:
-            while True:
-                try:
-                    challenge.set_difficulty(
-                        input(
-                            f"Difficulty of the challenge ({', '.join(DIFFICULTIES)}): "
-                        ).lower()
-                    )
-                    break
-                except ValueError:
-                    print("Invalid difficulty. Please try again.")
-        else:
-            challenge.set_difficulty(args.difficulty)
-
-        prompted_type = None
-        if args.type is None:
-            while True:
-                try:
-                    prompted_type = input(
-                        f"Type of the challenge ({', '.join(CHALL_TYPES)}): "
-                    ).lower()
-                    challenge.set_type(prompted_type)
-                    break
-                except ValueError:
-                    print("Invalid type. Please try again.")
-        else:
-            challenge.set_type(args.type)
-            prompted_type = args.type
-
-        if args.flag is None:
-            while True:
-                try:
-                    challenge.set_flag(
-                        input(f"Flag for the challenge ({FLAG_FORMAT}): ")
-                    )
-                    break
-                except ValueError:
-                    print("Invalid flag. Please try again.")
-        else:
-            challenge.set_flag(args.flag)
-
-        if args.points is None:
-            while True:
-                try:
-                    challenge.set_points(
-                        int(input("Points for the challenge (1000): ") or 1000)
-                    )
-                    break
-                except ValueError:
-                    print("Invalid points. Please try again.")
-        else:
-            challenge.set_points(args.points)
-
-        if args.min_points is None:
-            while True:
-                try:
-                    challenge.set_min_points(
-                        int(input("Minimum points for the challenge (100): ") or 100)
-                    )
-                    break
-                except ValueError:
-                    print("Invalid minimum points. Please try again.")
-        else:
-            challenge.set_min_points(args.min_points)
-
-        if (
-            args.type in ["instanced", "shared"]
-            or prompted_type in ["instanced", "shared"]
-        ) and args.instanced_type == "none":
-            while True:
-                try:
-                    challenge.set_instanced_type(
-                        input(
-                            f"Instanced type for challenge ({', '.join(INSTANCED_TYPES)}): "
-                        ).lower()
-                    )
-                    if challenge.instanced_type == "web":
-                        challenge.default_port = 80
-                    elif challenge.instanced_type == "tcp":
-                        challenge.default_port = 1337
-                    break
-                except ValueError:
-                    print("Invalid instanced type. Please try again.")
-        elif args.instanced_type != "none":
-            challenge.set_instanced_type(args.instanced_type)
-        else:
-            challenge.set_instanced_type("none")
-
-        if args.description_location == "description.md":
-            while True:
-                try:
-                    challenge.set_description_location(
-                        input("Location of the description file (description.md): ")
-                        or "description.md"
-                    )
-                    break
-                except ValueError:
-                    print("Invalid description location. Please try again.")
-        else:
-            challenge.set_description_location(args.description_location)
-
+        """
         if (
             args.dockerfile_location is None
             or args.dockerfile_location == "src/Dockerfile"
@@ -276,19 +224,7 @@ class Args:
                         break
                     except ValueError:
                         print("Invalid Dockerfile location. Please try again.")
-
-        if args.handout_location == "handout":
-            contains_handout = (
-                input(
-                    "What is the location of the handout for handing out with the challenge? (handout): "
-                )
-                or "handout"
-            )
-            if contains_handout:
-                challenge.set_handout_dir(contains_handout)
-        else:
-            challenge.set_handout_dir(args.handout_location)
-
+        """
         return challenge
 
 
@@ -332,18 +268,8 @@ class ChallengeCreator:
         if args.name and args.slug is None:
             args.slug = Utils.slugify(args.name) if args.name else "challenge"
 
-        challenge = None
         if not args.no_prompts:
-            challenge = Challenge(
-                name="demo",
-                slug="demo",
-                author="demo",
-                category="misc",
-                difficulty="easy",
-                type="static",
-                flag="flag{demo_flag}",
-            )
-            arguments.prompt(challenge)
+            challenge = arguments.prompt()
 
             print("\nInformation filled out.")
 

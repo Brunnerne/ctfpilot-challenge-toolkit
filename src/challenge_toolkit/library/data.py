@@ -23,40 +23,30 @@ class DockerfileLocation:
     context: str
     identifier: str | None = None
 
-    def __init__(self, location, context, identifier):
-        self.set_location(location)
-        self.set_context(context)
-        self.set_identifier(identifier)
+    def __post_init__(self):
+        self.validate_location()
+        self.validate_context()
+        self.validate_identifier()
 
-    def set_location(self, location: str):
-        if not re.match(r"^[a-zA-Z0-9-_/\.]+$", location):
+    def validate_location(self):
+        if not re.match(r"^[a-zA-Z0-9-_/\.]+$", self.location):
             print("Dockerfile location must be a valid file path to a Dockerfile.")
             raise ValueError(
                 "Dockerfile location must be a valid file path to a Dockerfile."
             )
 
-        self.location = location
-
-    def set_context(self, context: str):
-        if not re.match(r"^[a-zA-Z0-9-_/\.]+$", context):
+    def validate_context(self):
+        if not re.match(r"^[a-zA-Z0-9-_/\.]+$", self.context):
             print("Dockerfile context must be a valid file path.")
             raise ValueError("Dockerfile context must be a valid file path.")
 
-        self.context = context
+    def validate_identifier(self):
+        self.identifier = Utils.slugify(self.identifier) or None
 
-    def set_identifier(self, identifier: str | None):
-        identifier = Utils.slugify(identifier) or None
-
-        if identifier is None:
-            self.identifier = None
-            return
-
-        if identifier is not None and not Utils.validate_length(
-            identifier, 1, 50, "identifier"
+        if self.identifier is not None and not Utils.validate_length(
+            self.identifier, 1, 50, "identifier"
         ):
             raise ValueError("Identifier must be between 1 and 50 characters.")
-
-        self.identifier = identifier
 
 
 @dataclass
@@ -64,19 +54,16 @@ class ChallengeFlag:
     flag: str
     case_sensitive: bool = False
 
-    def __init__(self, flag: str, case_sensitive: bool = False):
-        if not Utils.validate_length(flag, 1, 1000, "flag"):
+    def __post_init__(self):
+        if not Utils.validate_length(self.flag, 1, 1000, "flag"):
             raise ValueError("Flag must be between 1 and 1000 characters.")
 
-        flag = flag.strip().replace("\n", "").replace("\r", "")
-        if not re.match(FLAG_FORMAT, flag):
+        self.flag = self.flag.strip().replace("\n", "").replace("\r", "")
+        if not re.match(FLAG_FORMAT, self.flag):
             print("Flag must be in the format: " + FLAG_FORMAT)
             raise ValueError(
-                'The flag "' + flag + '" must be in the format: ' + FLAG_FORMAT
+                'The flag "' + self.flag + '" must be in the format: ' + FLAG_FORMAT
             )
-
-        self.flag = flag
-        self.case_sensitive = case_sensitive
 
     def to_dict(self):
         return {"flag": self.flag, "case_sensitive": self.case_sensitive}
@@ -90,7 +77,7 @@ class Challenge:
     category: str
     difficulty: str
     type: str
-    tags: list[str] | None = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     instanced_type: str = DEFAULT["instanced_type"]
     instanced_name: str | None = DEFAULT["instanced_name"]
     instanced_subdomains: list[str] = field(default_factory=list)
@@ -105,238 +92,123 @@ class Challenge:
     dockerfile_locations: list[DockerfileLocation] = field(default_factory=list)
     prerequisites: list[str] = field(default_factory=list)
 
-    def __init__(
-        self,
-        enabled: bool = True,
-        name: str | None = None,
-        slug: str | None = None,
-        author: str | None = None,
-        category: str | None = None,
-        difficulty: str | None = None,
-        type: str | None = None,
-        instanced_type: str | None = None,
-        instanced_name: str | None = None,
-        instanced_subdomains: list[str] | None = None,
-        tags: list[str] | None = None,
-        connection: str | None = None,
-        flag: str
-        | list[str]
-        | list[dict]
-        | ChallengeFlag
-        | list[ChallengeFlag]
-        | None = None,
-        points: int | None = None,
-        decay: int | None = None,
-        min_points: int | None = None,
-        description_location: str | None = None,
-        handout_dir: str | None = None,
-    ):
-        # Insert default values from DEFAULT
-        if enabled is not None:
-            self.set_enabled(enabled)
-        else:
-            self.set_enabled(DEFAULT["enabled"])
-        if name is not None:
-            self.set_name(name)
-        else:
-            self.set_name(DEFAULT["name"])
-        if slug is not None:
-            self.set_slug(slug)
-        else:
-            self.set_slug(DEFAULT["slug"])
-        if author is not None:
-            self.set_author(author)
-        else:
-            self.set_author(DEFAULT["author"])
-        if category is not None:
-            self.set_category(category)
-        else:
-            self.set_category(DEFAULT["category"])
-        if difficulty is not None:
-            self.set_difficulty(difficulty)
-        else:
-            self.set_difficulty(DEFAULT["difficulty"])
-        if type is not None:
-            self.set_type(type)
-        else:
-            self.set_type(DEFAULT["type"])
-        if instanced_type is not None:
-            self.set_instanced_type(instanced_type)
-        else:
-            self.set_instanced_type(DEFAULT["instanced_type"])
-        if tags is not None:
-            self.set_tags(tags)
-        else:
-            self.set_tags(DEFAULT["tags"])
-        if instanced_name is not None:
-            self.instanced_name = instanced_name
-        else:
-            self.instanced_name = DEFAULT["instanced_name"]
-        if instanced_subdomains is not None:
-            self.set_instanced_subdomains(instanced_subdomains)
-        else:
-            self.instanced_subdomains = DEFAULT["instanced_subdomains"]
-        if connection is not None:
-            self.set_connection(connection)
-        else:
-            self.connection = DEFAULT["connection"]
-        if flag is not None:
-            self.set_flag(flag)
-        else:
-            self.set_flag(DEFAULT["flag"])
-        if points is not None:
-            self.set_points(points)
-        else:
-            self.set_points(DEFAULT["points"])
-        if decay is not None:
-            self.set_decay(decay)
-        else:
-            self.set_decay(DEFAULT["decay"])
-        if min_points is not None:
-            self.set_min_points(min_points)
-        else:
-            self.set_min_points(DEFAULT["min_points"])
-        if description_location is not None:
-            self.set_description_location(description_location)
-        else:
-            self.set_description_location(DEFAULT["description_location"])
-        if handout_dir is not None:
-            self.set_handout_dir(handout_dir)
-        else:
-            self.set_handout_dir(DEFAULT["handout_dir"])
+    def __post_init__(self):
+        # Run validations
+        self.validate_name()
+        self.validate_slug()
+        self.validate_author()
+        self.validate_category()
+        self.validate_difficulty()
+        self.validate_type()
+        self.validate_tags()
+        self.validate_instanced_type()
+        self.validate_instanced_name()
+        self.validate_instanced_subdomains()
+        self.validate_connection()
+        self.validate_flag()
+        self.validate_points()
+        self.validate_decay()
+        self.validate_min_points()
+        self.validate_description_location()
+        self.validate_handout_dir()
 
-        self.prerequisites = []
-        self.dockerfile_locations = []
         if self.instanced_type == "tcp":
             self.default_port = 1337
         elif self.instanced_type == "web":
             self.default_port = 80
 
-    def set_enabled(self, enabled: bool):
-        if not isinstance(enabled, bool):
-            raise TypeError("Enabled must be a boolean")
-
-        self.enabled = enabled
-
-    def set_name(self, name: str):
-        if not Utils.validate_length(name, 1, 50, "name"):
+    def validate_name(self):
+        if not Utils.validate_length(self.name, 1, 50, "name"):
             raise ValueError("Name must be between 1 and 50 characters.")
 
-        self.name = name
-
-    def set_slug(self, slug: str):
-        slug = Utils.slugify(slug) or ""
-
-        if not Utils.validate_length(slug, 1, 50, "slug"):
+    def validate_slug(self):
+        self.slug = Utils.slugify(self.slug) or ""
+        if not Utils.validate_length(self.slug, 1, 50, "slug"):
             raise ValueError("Slug must be between 1 and 50 characters.")
 
-        self.slug = slug
-
-    def set_author(self, author: str):
-        if not Utils.validate_length(author, 1, 100, "author"):
+    def validate_author(self):
+        if not Utils.validate_length(self.author, 1, 100, "author"):
             raise ValueError("Author must be between 1 and 100 characters.")
 
-        self.author = author
-
-    def set_category(self, category: str):
-        if not Utils.validate_length(category, 1, 50, "category"):
+    def validate_category(self):
+        if not Utils.validate_length(self.category, 1, 50, "category"):
             raise ValueError("Category must be between 1 and 50 characters.")
 
-        if category not in CATEGORIES:
+        if self.category not in CATEGORIES:
             print("Category must be one of the following: " + ", ".join(CATEGORIES))
             raise ValueError(
                 "Invalid category provided. Category must be one of the following: "
                 + ", ".join(CATEGORIES)
             )
 
-        self.category = category
-
-    def set_difficulty(self, difficulty: str):
-        if difficulty is None:
+    def validate_difficulty(self):
+        if self.difficulty is None:
             print("Difficulty must be provided.")
             raise ValueError("Difficulty must be provided.")
 
-        difficulty = difficulty.lower()
-        if difficulty not in DIFFICULTIES:
+        self.difficulty = self.difficulty.lower()
+        if self.difficulty not in DIFFICULTIES:
             print("Difficulty must be one of the following: " + ", ".join(DIFFICULTIES))
             raise ValueError(
                 "Invalid difficulty provided. Difficulty must be one of the following: "
                 + ", ".join(DIFFICULTIES)
             )
 
-        self.difficulty = difficulty
-
-    def set_type(self, type: str):
-        if type is None:
+    def validate_type(self):
+        if self.type is None:
             print("Type must be provided.")
             raise ValueError("Type must be provided.")
 
-        type = type.lower()
-        if type not in CHALL_TYPES:
+        self.type = self.type.lower()
+        if self.type not in CHALL_TYPES:
             print("Type must be one of the following: " + ", ".join(CHALL_TYPES))
             raise ValueError(
                 "Invalid type provided. Type must be one of the following: "
                 + ", ".join(CHALL_TYPES)
             )
-        self.type = type
 
-    def set_tags(self, tags: list[str]):
-        if not isinstance(tags, list):
+    def validate_tags(self):
+        if not isinstance(self.tags, list):
             print("Tags must be a list of strings.")
             raise TypeError("Tags must be a list of strings.")
 
-        for tag in tags:
+        for tag in self.tags:
             if not re.match(TAG_FORMAT, tag):
                 print(f"Tag '{tag}' does not match the required format: {TAG_FORMAT}")
                 raise ValueError(
                     f"Tag '{tag}' does not match the required format: {TAG_FORMAT}"
                 )
 
-        self.tags = tags
+    def validate_instanced_type(self):
+        self.instanced_type = self.instanced_type.lower()
+        if self.instanced_type not in INSTANCED_TYPES:
+            print(
+                "Instanced type must be one of the following: "
+                + ", ".join(INSTANCED_TYPES)
+            )
+            raise ValueError(
+                "Invalid instanced type provided. Instanced type must be one of the following: "
+                + ", ".join(INSTANCED_TYPES)
+            )
 
-    def set_points(self, points: int):
-        if points is None:
-            self.points = None
+    def validate_instanced_name(self):
+        if self.instanced_name is None:
             return
 
-        if points < 1 or points > 10000:
-            print("Points must be between 1 and 10000.")
-            raise ValueError("Points must be between 1 and 10000.")
+        self.instanced_name = Utils.slugify(self.instanced_name)
+        if not Utils.validate_length(self.instanced_name, 1, 50, "instanced_name"):
+            raise ValueError("Instanced name must be between 1 and 50 characters.")
 
-        self.points = points
-
-    def set_decay(self, decay: int):
-        if decay is None:
-            self.decay = None
-            return
-
-        if decay < 0 or decay > 10000:
-            print("Decay must be between 0 and 10000.")
-            raise ValueError("Decay must be between 0 and 10000.")
-
-        self.decay = decay
-
-    def set_min_points(self, min_points: int):
-        if min_points is None:
-            self.min_points = None
-            return
-
-        if min_points < 1 or min_points > 1000:
-            print("Minimum points must be between 1 and 1000.")
-            raise ValueError("Minimum points must be between 1 and 1000.")
-
-        self.min_points = min_points
-
-    def set_instanced_subdomains(self, instanced_subdomains: list[str]):
-        if not isinstance(instanced_subdomains, list):
+    def validate_instanced_subdomains(self):
+        if not isinstance(self.instanced_subdomains, list):
             print("Instanced subdomains must be a list of strings.")
             raise TypeError("Instanced subdomains must be a list of strings.")
 
-        if len(instanced_subdomains) > 5:
+        if len(self.instanced_subdomains) > 5:
             print("Instanced subdomains must not exceed 5 items.")
             raise ValueError("Instanced subdomains must not exceed 5 items.")
 
-        for subdomain in instanced_subdomains:
+        for subdomain in self.instanced_subdomains:
             if not re.match(r"^((web|tcp):)?[a-z0-9-]+$", subdomain):
                 print(
                     f"Subdomain '{subdomain}' does not match the required format: ^((web|tcp):)?[a-z0-9-]+$"
@@ -353,23 +225,22 @@ class Challenge:
                     f"Subdomain '{subdomain}' exceeds the maximum length of 10 characters."
                 )
 
-        self.instanced_subdomains = instanced_subdomains
+    def validate_connection(self):
+        if self.connection is None:
+            return
 
-    def set_connection(self, connection: str | None):
-        if connection is not None and not isinstance(connection, str):
+        if not isinstance(self.connection, str):
             print("Connection must be a string or None.")
-            raise ValueError("Connection must be a string or None.")
+            raise TypeError("Connection must be a string or None.")
 
         # Max length of 255
-        if not Utils.validate_length(connection, 1, 255, "connection"):
+        if not Utils.validate_length(self.connection, 1, 255, "connection"):
             raise ValueError("Connection string must be between 1 and 255 characters.")
 
-        self.connection = connection
-
-    def set_flag(self, flag):
-        if isinstance(flag, list):
+    def validate_flag(self):
+        if isinstance(self.flag, list):
             clean_flags = []
-            for f in flag:
+            for f in self.flag:
                 if isinstance(f, ChallengeFlag):
                     clean_flags.append(f)
                 elif isinstance(f, str):
@@ -384,59 +255,39 @@ class Challenge:
             if not clean_flags:
                 raise ValueError("No valid flags provided in list.")
             self.flag = clean_flags
-        elif isinstance(flag, str):
-            self.flag = [ChallengeFlag(flag)]
-        elif isinstance(flag, ChallengeFlag):
-            self.flag = [flag]
+        elif isinstance(self.flag, str):
+            self.flag = [ChallengeFlag(self.flag)]
+        elif isinstance(self.flag, ChallengeFlag):
+            self.flag = [self.flag]
         else:
             self.flag = None
 
-    def set_instanced_type(self, instanced_type: str):
-        instanced_type = instanced_type.lower()
-        if instanced_type not in INSTANCED_TYPES:
-            print(
-                "Instanced type must be one of the following: "
-                + ", ".join(INSTANCED_TYPES)
-            )
-            raise ValueError(
-                "Invalid instanced type provided. Instanced type must be one of the following: "
-                + ", ".join(INSTANCED_TYPES)
-            )
+    def validate_points(self):
+        if self.points is not None and (self.points < 1 or self.points > 10000):
+            print("Points must be between 1 and 10000.")
+            raise ValueError("Points must be between 1 and 10000.")
 
-        self.instanced_type = instanced_type
+    def validate_decay(self):
+        if self.decay is not None and (self.decay < 0 or self.decay > 10000):
+            print("Decay must be between 0 and 10000.")
+            raise ValueError("Decay must be between 0 and 10000.")
 
-    def set_instanced_name(self, instanced_name: str | None):
-        instanced_name = Utils.slugify(instanced_name)
+    def validate_min_points(self):
+        if self.min_points and (self.min_points < 1 or self.min_points > 1000):
+            print("Minimum points must be between 1 and 1000.")
+            raise ValueError("Minimum points must be between 1 and 1000.")
 
-        if not Utils.validate_length(instanced_name, 1, 50, "instanced_name"):
-            raise ValueError("Instanced name must be between 1 and 50 characters.")
-
-        self.instanced_name = instanced_name
-
-    def set_description_location(self, description_location: str):
-        if not re.match(r"^[a-zA-Z0-9-_/]+.md$", description_location):
+    def validate_description_location(self):
+        if not re.match(r"^[a-zA-Z0-9-_/]+.md$", self.description_location):
             print("Description location must be a valid file path to a Markdown file.")
             raise ValueError(
                 "Description location must be a valid file path to a Markdown file."
             )
 
-        self.description_location = description_location
-
-    def get_description(self):
-        file = self.get_path().joinpath(self.description_location)
-
-        if not file.exists():
-            return ""
-
-        with open(file, "r") as f:
-            return f.read()
-
-    def set_handout_dir(self, handout_dir: str):
-        if not re.match(r"^[a-zA-Z0-9-_/]+$", handout_dir):
+    def validate_handout_dir(self):
+        if not re.match(r"^[a-zA-Z0-9-_/]+$", self.handout_dir):
             print("Handout directory must be a valid file path.")
             raise ValueError("Handout directory must be a valid file path.")
-
-        self.handout_dir = handout_dir
 
     def add_dockerfile_location(self, locations: list[DockerfileLocation]):
         self.dockerfile_locations.extend(locations)
@@ -456,6 +307,15 @@ class Challenge:
             raise ValueError("Prerequisite already exists.")
 
         self.prerequisites.append(prerequisite)
+
+    def get_description(self):
+        file = self.get_path().joinpath(self.description_location)
+
+        if not file.exists():
+            return ""
+
+        with open(file, "r") as f:
+            return f.read()
 
     def get_version(self):
         file = self.get_path().joinpath("version")
@@ -631,13 +491,15 @@ class Challenge:
         # Check for yml or json file
         path = Path(directory)
         for file in path.iterdir():
-            if file.is_file():
-                if file.name.endswith(".yml") or file.name.endswith(".yaml"):
-                    print("Loading from yml file")
-                    return Challenge.load_from_yaml(Utils.load_yaml(file))
-                elif file.name.endswith(".json"):
-                    print("Loading from json file")
-                    return Challenge.load_from_json(Utils.load_json(file))
+            if not file.is_file():
+                continue
+
+            if file.name.endswith(".yml") or file.name.endswith(".yaml"):
+                print("Loading from yml file")
+                return Challenge.load_from_yaml(Utils.load_yaml(file))
+            elif file.name.endswith(".json"):
+                print("Loading from json file")
+                return Challenge.load_from_json(Utils.load_json(file))
 
 
 @dataclass
@@ -648,72 +510,37 @@ class Page:
     route: str = ""
     content: str = "page.md"
     format: str = "markdown"
-    auth: bool | None = False
-    draft: bool | None = False
+    auth: bool = False
+    draft: bool = False
 
-    def __init__(
-        self,
-        enabled: bool = True,
-        slug: str | None = None,
-        title: str | None = None,
-        route: str | None = None,
-        content: str | None = None,
-        format: str | None = None,
-        auth: bool | None = None,
-        draft: bool | None = None,
-    ):
-        if enabled is not None:
-            self.set_enabled(enabled)
-        if slug is not None:
-            self.set_slug(slug)
-        if title is not None:
-            self.set_title(title)
-        if route is not None:
-            self.set_route(route)
-        if content is not None:
-            self.set_content(content)
-        if format is not None:
-            self.set_format(format)
-        if auth is not None:
-            self.set_auth(auth)
-        if draft is not None:
-            self.set_draft(draft)
+    def __post_init__(self):
+        self.validate_slug()
+        self.validate_title()
+        self.validate_route()
+        self.validate_content()
+        self.validate_format()
 
-    def set_enabled(self, enabled: bool):
-        self.enabled = enabled
-
-    def set_slug(self, slug: str):
-        if not Utils.validate_length(slug, 1, 50, "slug"):
+    def validate_slug(self):
+        if not Utils.validate_length(self.slug, 1, 50, "slug"):
             raise ValueError("Slug must be between 1 and 50 characters.")
-        self.slug = slug
 
-    def set_title(self, title: str):
-        if not Utils.validate_length(title, 1, 100, "title"):
+    def validate_title(self):
+        if not Utils.validate_length(self.title, 1, 100, "title"):
             raise ValueError("Title must be between 1 and 100 characters.")
-        self.title = title
 
-    def set_route(self, route: str):
-        if not Utils.validate_length(route, 1, 100, "route"):
+    def validate_route(self):
+        if not Utils.validate_length(self.route, 1, 100, "route"):
             raise ValueError("Route must be between 1 and 100 characters.")
-        self.route = route
 
-    def set_content(self, content: str):
-        if not re.match(r"^[a-zA-Z0-9-_.]+\.(md|html|txt)$", content):
+    def validate_content(self):
+        if not re.match(r"^[a-zA-Z0-9-_.]+\.(md|html|txt)$", self.content):
             raise ValueError(
                 "Content must be a valid file path ending in .md, .html, or .txt."
             )
-        self.content = content
 
-    def set_format(self, format: str):
-        if format not in ["markdown", "html"]:
+    def validate_format(self):
+        if self.format not in ("markdown", "html"):
             raise ValueError("Format must be either 'markdown' or 'html'.")
-        self.format = format
-
-    def set_auth(self, auth: bool | None):
-        self.auth = auth if auth is not None else False
-
-    def set_draft(self, draft: bool | None):
-        self.draft = draft if draft is not None else False
 
     def get_version(self):
         file = self.get_path().joinpath("version")

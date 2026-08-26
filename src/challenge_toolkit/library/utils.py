@@ -61,7 +61,7 @@ class Utils:
         return Utils.get_repo_dir().joinpath("template")
 
     @staticmethod
-    def slugify(text):
+    def slugify(text: str | None):
         if text is None:
             return None
 

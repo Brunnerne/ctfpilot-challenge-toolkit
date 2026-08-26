@@ -56,61 +56,6 @@ class TestChallenge(unittest.TestCase):
         self.assertEqual(self.challenge.description_location, "description.md")
         self.assertEqual(self.challenge.handout_dir, "files")
 
-    def test_setters(self):
-        self.challenge.set_name("New Name")
-        self.assertEqual(self.challenge.name, "New Name")
-
-        self.challenge.set_slug("new-slug")
-        self.assertEqual(self.challenge.slug, "new-slug")
-
-        self.challenge.set_author("New Author")
-        self.assertEqual(self.challenge.author, "New Author")
-
-        self.challenge.set_category("crypto")
-        self.assertEqual(self.challenge.category, "crypto")
-
-        self.challenge.set_difficulty("medium")
-        self.assertEqual(self.challenge.difficulty, "medium")
-
-        self.challenge.set_tags(["new", "tags"])
-        self.assertEqual(self.challenge.tags, ["new", "tags"])
-
-        self.challenge.set_type("shared")
-        self.assertEqual(self.challenge.type, "shared")
-
-        self.challenge.set_instanced_type("tcp")
-        self.assertEqual(self.challenge.instanced_type, "tcp")
-
-        self.challenge.set_instanced_name("new-instanced-challenge")
-        self.assertEqual(self.challenge.instanced_name, "new-instanced-challenge")
-
-        self.challenge.set_instanced_subdomains(["new-demo"])
-        self.assertEqual(self.challenge.instanced_subdomains, ["new-demo"])
-
-        self.challenge.set_connection("nc new.example.com 4444")
-        self.assertEqual(self.challenge.connection, "nc new.example.com 4444")
-
-        self.challenge.set_flag("ctfpilot{new_flag}")
-        self.assertEqual(
-            self.challenge.flag,
-            [ChallengeFlag(flag="ctfpilot{new_flag}", case_sensitive=False)],
-        )
-
-        self.challenge.set_points(1000)
-        self.assertEqual(self.challenge.points, 1000)
-
-        self.challenge.set_decay(50)
-        self.assertEqual(self.challenge.decay, 50)
-
-        self.challenge.set_min_points(100)
-        self.assertEqual(self.challenge.min_points, 100)
-
-        self.challenge.set_description_location("new_description.md")
-        self.assertEqual(self.challenge.description_location, "new_description.md")
-
-        self.challenge.set_handout_dir("new_files")
-        self.assertEqual(self.challenge.handout_dir, "new_files")
-
     def test_add_dockerfile_location(self):
         dockerfile_location = DockerfileLocation("src/Dockerfile", "src/", "identifier")
         self.challenge.add_dockerfile_location([dockerfile_location])
@@ -1111,29 +1056,6 @@ class TestPage(unittest.TestCase):
         self.assertEqual(page.format, "markdown")
         self.assertTrue(page.auth)
         self.assertFalse(page.draft)
-
-    def test_page_setters(self):
-        page = Page()
-        page.set_slug("new-page")
-        self.assertEqual(page.slug, "new-page")
-
-        page.set_title("New Page Title")
-        self.assertEqual(page.title, "New Page Title")
-
-        page.set_route("/new-page")
-        self.assertEqual(page.route, "/new-page")
-
-        page.set_content("new-content.md")
-        self.assertEqual(page.content, "new-content.md")
-
-        page.set_format("html")
-        self.assertEqual(page.format, "html")
-
-        page.set_auth(True)
-        self.assertTrue(page.auth)
-
-        page.set_draft(True)
-        self.assertTrue(page.draft)
 
     def test_page_invalid_slug(self):
         with self.assertRaises(ValueError):
